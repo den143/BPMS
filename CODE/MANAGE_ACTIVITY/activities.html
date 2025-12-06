@@ -8,13 +8,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
+    <!-- Auth Script -->
+    <script src="/COMMON/auth.js" defer></script>
+
     <!-- Consolidated Styling -->
     <style>
         /* Base Styles (Inter font) */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f4f4f9; 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f9;
             margin: 0;
         }
         .dashboard-container {
@@ -50,7 +53,7 @@
             text-decoration: none;
             color: #333;
             border-radius: 6px;
-            transition: background-color 0.2s;
+            transition: background-color: 0.2s;
         }
         .sidebar-nav li a:hover, .sidebar-nav li a.active {
             background-color: #e3f2fd;
@@ -90,13 +93,13 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow-x: auto;
         }
-        .users-table { 
-            width: 100%; 
-            border-collapse: collapse; 
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .users-table th, .users-table td { 
-            padding: 15px 20px; 
-            border-bottom: 1px solid #f0f0f0; 
+        .users-table th, .users-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
             text-align: left;
             font-size: 0.95rem;
         }
@@ -110,58 +113,58 @@
         }
 
         /* Status Badges */
-        .status-badge { 
-            padding: 4px 10px; 
-            border-radius: 16px; 
-            font-size: 0.75rem; 
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
         }
-        .status-upcoming { 
-            background: #e3f2fd; 
-            color: #2196f3; 
+        .status-upcoming {
+            background: #e3f2fd;
+            color: #2196f3;
         }
-        .status-done { 
-            background: #e8f5e9; 
-            color: #2e7d32; 
+        .status-done {
+            background: #e8f5e9;
+            color: #2e7d32;
         }
 
         /* Buttons and Actions */
-        .btn { 
-            padding: 10px 20px; 
-            cursor: pointer; 
-            border: none; 
-            border-radius: 6px; 
+        .btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
             transition: all 0.2s;
             font-weight: 600;
         }
-        .btn-primary { 
-            background: #2196f3; 
-            color: white; 
+        .btn-primary {
+            background: #2196f3;
+            color: white;
         }
         .btn-primary:hover {
             background: #1e88e5;
         }
-        .btn-action { 
-            padding: 6px 12px; 
-            margin-right: 5px; 
-            cursor: pointer; 
-            background: #f0f0f0; 
-            color: #333; 
-            border: 1px solid #ddd; 
+        .btn-action {
+            padding: 6px 12px;
+            margin-right: 5px;
+            cursor: pointer;
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 0.85rem;
         }
         .btn-action:hover {
             background: #e0e0e0;
         }
-        .btn-action-danger { 
-            background-color: #ffebee; 
-            color: #c62828; 
-            border: 1px solid #ef9a9a; 
+        .btn-action-danger {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
         }
         .btn-action-danger:hover {
-            background-color: #ffcdd2; 
+            background-color: #ffcdd2;
         }
         .action-buttons {
             display: flex;
@@ -169,65 +172,65 @@
         }
 
         /* Modal Overlays (For Create/Edit and Custom Confirm) */
-        .modal-overlay { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.6); 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 1000; 
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
             padding: 20px;
         }
-        .modal-content { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 10px; 
-            width: 450px; 
-            max-width: 95%; 
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 450px;
+            max-width: 95%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
-        .modal-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 25px; 
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
         }
         .modal-header h2 {
             margin: 0;
             font-size: 1.75rem;
             color: #333;
         }
-        .close-button { 
-            border:none; 
-            background:none; 
-            font-size:2rem; 
-            cursor:pointer; 
+        .close-button {
+            border:none;
+            background:none;
+            font-size:2rem;
+            cursor:pointer;
             color: #999;
             transition: color 0.2s;
         }
         .close-button:hover {
             color: #333;
         }
-        
+
         /* Form Styling */
-        .form-group { 
-            margin-bottom: 20px; 
+        .form-group {
+            margin-bottom: 20px;
         }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-weight: 500; 
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
             color: #555;
         }
-        .form-group input, .form-group textarea { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 6px; 
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             box-sizing: border-box;
             transition: border-color 0.2s;
         }
@@ -295,7 +298,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Create/Edit Activity Modal -->
     <div id="activityModal" class="modal-overlay">
         <div class="modal-content">
@@ -361,7 +364,7 @@
                     <h2 class="main-title">Activities List</h2>
                     <button id="createActivityBtn" class="btn btn-primary">Create Activity</button>
                 </div>
-                
+
                 <!-- Activities Table Card -->
                 <div class="card table-card">
                     <table class="users-table">
@@ -425,200 +428,5 @@
             </div>
         </main>
     </div>
-    
-    <script>
-        // Utility function to format date/time and determine status
-        const formatActivityData = (rawDatetime) => {
-            if (!rawDatetime) {
-                return { dateStr: 'N/A', timeStr: 'N/A', statusHtml: '<span class="status-badge status-done">Done</span>' };
-            }
-            const dateObj = new Date(rawDatetime);
-            const dateStr = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-            const timeStr = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-            
-            // Determine Status (Past vs Future)
-            const now = new Date();
-            const isPast = dateObj < now;
-            const statusHtml = isPast 
-                ? '<span class="status-badge status-done">Done</span>' 
-                : '<span class="status-badge status-upcoming">Upcoming</span>';
-            
-            return { dateStr, timeStr, statusHtml, isPast };
-        };
-
-        // DOMContentLoaded listener for initialization
-        document.addEventListener('DOMContentLoaded', () => {
-            // Elements
-            const activityModal = document.getElementById('activityModal');
-            const createBtn = document.getElementById('createActivityBtn');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const activityForm = document.getElementById('activityForm');
-            const tableBody = document.getElementById('activityTableBody');
-            const modalTitle = document.getElementById('modalTitle');
-            const submitBtn = document.getElementById('submitBtn');
-
-            // Form Inputs
-            const nameInput = document.getElementById('activityName');
-            const datetimeInput = document.getElementById('activityDateTime');
-            const locInput = document.getElementById('activityLocation');
-            const notesInput = document.getElementById('activityNotes');
-
-            // Custom Confirm Modal Elements
-            const confirmModal = document.getElementById('confirmModal');
-            const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
-            const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
-            const confirmMessage = document.getElementById('confirmMessage');
-            
-            // State
-            let editingRow = null;
-            let rowToDelete = null;
-
-            // --- Modal Functions ---
-
-            const openModal = (mode = 'create', row = null) => {
-                activityForm.reset();
-                editingRow = row;
-
-                if (mode === 'edit' && row) {
-                    modalTitle.innerText = "Edit Activity";
-                    submitBtn.innerText = "Update Activity";
-                    
-                    // Populate Form from row attributes
-                    nameInput.value = row.querySelector('.col-name').textContent;
-                    locInput.value = row.querySelector('.col-loc').textContent;
-                    // Note: data-datetime attribute is used for raw input value
-                    datetimeInput.value = row.getAttribute('data-datetime');
-                    notesInput.value = row.getAttribute('data-notes') || "";
-                } else {
-                    modalTitle.innerText = "Create New Activity";
-                    submitBtn.innerText = "Save Activity";
-                }
-                activityModal.style.display = 'flex';
-            };
-
-            const closeModal = () => {
-                activityModal.style.display = 'none';
-                activityForm.reset();
-                editingRow = null;
-            };
-
-            // Event Listeners for Modal Open/Close
-            createBtn.addEventListener('click', () => openModal('create'));
-            closeModalBtn.addEventListener('click', closeModal);
-            window.addEventListener('click', (event) => {
-                if (event.target === activityModal) closeModal();
-            });
-
-
-            // --- Form Submission Handler (Create / Update) ---
-            activityForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                // 1. Get Values
-                const name = nameInput.value;
-                const rawDatetime = datetimeInput.value;
-                const loc = locInput.value;
-                const notes = notesInput.value;
-
-                // 2. Format Data and determine status
-                const { dateStr, timeStr, statusHtml } = formatActivityData(rawDatetime);
-
-                if (editingRow) {
-                    // 3a. UPDATE existing row
-                    
-                    // Update visible cells (using data-label for mobile compatibility)
-                    editingRow.querySelector('.col-name').textContent = name;
-                    editingRow.querySelector('.col-name').setAttribute('data-label', name); 
-                    editingRow.querySelector('.col-date').textContent = dateStr;
-                    editingRow.querySelector('.col-loc').textContent = loc;
-                    editingRow.querySelector('.col-time').textContent = timeStr;
-                    
-                    // Update Status
-                    editingRow.querySelector('.col-status').innerHTML = statusHtml;
-
-                    // Update hidden raw data
-                    editingRow.setAttribute('data-datetime', rawDatetime);
-                    editingRow.setAttribute('data-notes', notes);
-
-                    console.log("Activity Updated Successfully:", name);
-                } else {
-                    // 3b. CREATE new row
-                    const newRow = document.createElement('tr');
-                    newRow.setAttribute('data-datetime', rawDatetime);
-                    newRow.setAttribute('data-notes', notes);
-
-                    newRow.innerHTML = `
-                        <td data-label="Activity Name" class="col-name">${name}</td>
-                        <td data-label="Date" class="col-date">${dateStr}</td>
-                        <td data-label="Time" class="col-time">${timeStr}</td>
-                        <td data-label="Location" class="col-loc">${loc}</td>
-                        <td data-label="Status" class="col-status">${statusHtml}</td>
-                        <td data-label="Action">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit">Edit</button>
-                                <button class="btn-action btn-action-danger btn-delete">Cancel</button>
-                            </div>
-                        </td>
-                    `;
-                    tableBody.prepend(newRow); // Add to the top
-                }
-                closeModal();
-            });
-
-            // --- Table Click Handler (Edit / Delete) ---
-            tableBody.addEventListener('click', (e) => {
-                const target = e.target;
-                const row = target.closest('tr');
-
-                if (!row) return;
-
-                // EDIT Action
-                if (target.classList.contains('btn-edit')) {
-                    openModal('edit', row);
-                }
-
-                // DELETE / CANCEL Action (using custom confirm modal)
-                if (target.classList.contains('btn-delete')) {
-                    rowToDelete = row;
-                    confirmMessage.innerHTML = "Are you sure you want to <strong>cancel</strong> this activity?";
-                    deleteConfirmBtn.textContent = "Yes, Cancel";
-                    confirmModal.style.display = 'flex';
-                }
-            });
-
-            // --- Custom Confirmation Modal Logic ---
-
-            deleteConfirmBtn.addEventListener('click', () => {
-                if (rowToDelete) {
-                    rowToDelete.remove();
-                    rowToDelete = null;
-                    console.log("Activity cancelled successfully.");
-                }
-                confirmModal.style.display = 'none';
-            });
-
-            cancelConfirmBtn.addEventListener('click', () => {
-                rowToDelete = null;
-                confirmModal.style.display = 'none';
-            });
-            
-            // Close confirm modal if user clicks on the overlay
-            window.addEventListener('click', (event) => {
-                if (event.target === confirmModal) {
-                    rowToDelete = null;
-                    confirmModal.style.display = 'none';
-                }
-            });
-            
-            // --- Initial Status Check for Static Rows (Ensures existing data is correct) ---
-            document.querySelectorAll('#activityTableBody tr').forEach(row => {
-                const rawDatetime = row.getAttribute('data-datetime');
-                if (rawDatetime) {
-                    const { statusHtml } = formatActivityData(rawDatetime);
-                    row.querySelector('.col-status').innerHTML = statusHtml;
-                }
-            });
-        });
-    </script>
 </body>
 </html>

@@ -7,13 +7,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
+    <!-- Auth Script -->
+    <script src="/COMMON/auth.js" defer></script>
+
     <!-- Consolidated Styling -->
     <style>
         /* Base Styles (Inter font) */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f4f4f9; 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f9;
             margin: 0;
         }
         .dashboard-container {
@@ -89,13 +92,13 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             overflow-x: auto;
         }
-        .data-table { 
-            width: 100%; 
-            border-collapse: collapse; 
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .data-table th, .data-table td { 
-            padding: 15px 20px; 
-            border-bottom: 1px solid #f0f0f0; 
+        .data-table th, .data-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
             text-align: left;
             font-size: 0.95rem;
         }
@@ -109,58 +112,58 @@
         }
 
         /* Status Badges */
-        .status-badge { 
-            padding: 4px 10px; 
-            border-radius: 16px; 
-            font-size: 0.75rem; 
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 16px;
+            font-size: 0.75rem;
             font-weight: 600;
             text-transform: uppercase;
         }
-        .status-enabled { 
-            background: #e8f5e9; 
-            color: #2e7d32; 
+        .status-enabled {
+            background: #e8f5e9;
+            color: #2e7d32;
         }
-        .status-disabled { 
-            background: #f5f5f5; 
-            color: #616161; 
+        .status-disabled {
+            background: #f5f5f5;
+            color: #616161;
         }
 
         /* Buttons and Actions */
-        .btn { 
-            padding: 10px 20px; 
-            cursor: pointer; 
-            border: none; 
-            border-radius: 6px; 
+        .btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
             transition: all 0.2s;
             font-weight: 600;
         }
-        .btn-primary { 
-            background: #2196f3; 
-            color: white; 
+        .btn-primary {
+            background: #2196f3;
+            color: white;
         }
         .btn-primary:hover {
             background: #1e88e5;
         }
-        .btn-action { 
-            padding: 6px 12px; 
-            margin-right: 5px; 
-            cursor: pointer; 
-            background: #f0f0f0; 
-            color: #333; 
-            border: 1px solid #ddd; 
+        .btn-action {
+            padding: 6px 12px;
+            margin-right: 5px;
+            cursor: pointer;
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 0.85rem;
         }
         .btn-action:hover {
             background: #e0e0e0;
         }
-        .btn-action-danger { 
-            background-color: #ffebee; 
-            color: #c62828; 
-            border: 1px solid #ef9a9a; 
+        .btn-action-danger {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
         }
         .btn-action-danger:hover {
-            background-color: #ffcdd2; 
+            background-color: #ffcdd2;
         }
         .action-buttons {
             display: flex;
@@ -168,69 +171,69 @@
         }
 
         /* Modal Overlays (For Create/Edit and Custom Confirm) */
-        .modal-overlay { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.6); 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 1000; 
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
             padding: 20px;
         }
-        .modal-content { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 10px; 
-            width: 450px; 
-            max-width: 95%; 
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 450px;
+            max-width: 95%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         .modal-content.confirm {
             width: 350px;
             padding: 25px;
         }
-        .modal-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 25px; 
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
         }
         .modal-header h2 {
             margin: 0;
             font-size: 1.75rem;
             color: #333;
         }
-        .close-button { 
-            border:none; 
-            background:none; 
-            font-size:2rem; 
-            cursor:pointer; 
+        .close-button {
+            border:none;
+            background:none;
+            font-size:2rem;
+            cursor:pointer;
             color: #999;
             transition: color 0.2s;
         }
         .close-button:hover {
             color: #333;
         }
-        
+
         /* Form Styling */
-        .form-group { 
-            margin-bottom: 20px; 
+        .form-group {
+            margin-bottom: 20px;
         }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-weight: 500; 
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
             color: #555;
         }
-        .form-group input, .form-group select { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 6px; 
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             box-sizing: border-box;
             transition: border-color 0.2s;
         }
@@ -377,7 +380,7 @@
                     <h2 class="main-title">Manage Rounds</h2>
                     <button id="addRoundBtn" class="btn btn-primary">Add Round</button>
                 </div>
-                
+
                 <!-- Rounds Table Card -->
                 <div class="card table-card">
                     <table class="data-table">
@@ -437,197 +440,5 @@
             </div>
         </main>
     </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Elements
-            const modal = document.getElementById('roundModal');
-            const addBtn = document.getElementById('addRoundBtn');
-            const closeBtn = document.getElementById('closeModalBtn');
-            const form = document.getElementById('roundForm');
-            const tableBody = document.getElementById('roundTableBody');
-            const modalTitle = document.getElementById('modalTitle');
-            const submitBtn = document.getElementById('submitBtn');
-
-            // Form Inputs
-            const roundNameInput = document.getElementById('roundName');
-            const roundOrderInput = document.getElementById('roundOrder');
-            const advancementRuleSelect = document.getElementById('advancementRule');
-            const topXContainer = document.getElementById('topXContainer');
-            const topXValueInput = document.getElementById('topXValue');
-            const votingCheckbox = document.getElementById('enableAudienceVoting');
-
-            // Confirmation Modal Elements
-            const confirmModal = document.getElementById('confirmModal');
-            const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
-            const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
-            const confirmMessage = document.getElementById('confirmMessage');
-
-            // State
-            let editingRow = null;
-            let rowToDelete = null;
-
-            // --- 1. Logic: Toggle "Top X" Input ---
-            const toggleTopXInput = () => {
-                if (advancementRuleSelect.value === 'top_x') {
-                    topXContainer.style.display = 'block';
-                    topXValueInput.setAttribute('required', 'true');
-                } else {
-                    topXContainer.style.display = 'none';
-                    topXValueInput.removeAttribute('required');
-                    topXValueInput.value = ''; // Clear value if hidden
-                }
-            };
-
-            advancementRuleSelect.addEventListener('change', toggleTopXInput);
-
-            // --- 2. Modal Logic ---
-            const openModal = (isEdit = false) => {
-                modal.style.display = 'flex';
-                if (!isEdit) {
-                    form.reset();
-                    editingRow = null;
-                    modalTitle.textContent = 'Create New Round';
-                    submitBtn.textContent = 'Save Round';
-                    advancementRuleSelect.value = 'top_x'; // Default
-                    toggleTopXInput();
-                } else {
-                    modalTitle.textContent = 'Edit Round';
-                    submitBtn.textContent = 'Update Round';
-                }
-            };
-
-            const closeModal = () => {
-                modal.style.display = 'none';
-                form.reset();
-                editingRow = null;
-            }
-
-            addBtn.addEventListener('click', () => openModal(false));
-            closeBtn.addEventListener('click', closeModal);
-            
-            window.addEventListener('click', (event) => {
-                if (event.target === modal) closeModal();
-                if (event.target === confirmModal) confirmModal.style.display = 'none';
-            });
-
-            // --- 3. Handle Form Submission (Create / Update) ---
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                // Get Values
-                const name = roundNameInput.value;
-                const order = roundOrderInput.value;
-                const ruleType = advancementRuleSelect.value;
-                const ruleVal = topXValueInput.value; // Only matters if top_x
-                const isVotingEnabled = votingCheckbox.checked;
-
-                // Determine Display Text for Rule
-                let displayRule = "";
-                if (ruleType === 'top_x') {
-                    displayRule = `Advance Top ${ruleVal}`;
-                } else if (ruleType === 'all') {
-                    displayRule = "Advance All";
-                } else if (ruleType === 'final') {
-                    displayRule = "Final Round";
-                }
-
-                // Determine Display HTML for Voting
-                const displayVoting = isVotingEnabled 
-                    ? '<span class="status-badge status-enabled">Enabled</span>' 
-                    : '<span class="status-badge status-disabled">Disabled</span>';
-
-                if (editingRow) {
-                    // === UPDATE EXISTING ROW ===
-                    editingRow.querySelector('.col-order').textContent = order;
-                    editingRow.querySelector('.col-name').textContent = name;
-                    editingRow.querySelector('.col-rule').textContent = displayRule;
-                    editingRow.querySelector('.col-voting').innerHTML = displayVoting;
-
-                    // Update Data Attributes
-                    editingRow.setAttribute('data-rule-type', ruleType);
-                    editingRow.setAttribute('data-rule-val', ruleVal);
-                    editingRow.setAttribute('data-voting', isVotingEnabled);
-
-                    console.log("Round Updated Successfully!");
-                } else {
-                    // === CREATE NEW ROW ===
-                    const newRow = document.createElement('tr');
-                    
-                    // Set Data Attributes
-                    newRow.setAttribute('data-rule-type', ruleType);
-                    newRow.setAttribute('data-rule-val', ruleVal);
-                    newRow.setAttribute('data-voting', isVotingEnabled);
-
-                    newRow.innerHTML = `
-                        <td class="col-order" data-label="Order">${order}</td>
-                        <td class="col-name" data-label="Round Name">${name}</td>
-                        <td class="col-rule" data-label="Advancement Rule">${displayRule}</td>
-                        <td class="col-voting" data-label="Audience Voting">${displayVoting}</td>
-                        <td data-label="Actions">
-                            <div class="action-buttons">
-                                <button class="btn-action edit-btn">Edit</button>
-                                <button class="btn-action btn-action-danger delete-btn">Deactivate</button>
-                            </div>
-                        </td>
-                    `;
-                    tableBody.appendChild(newRow);
-                }
-                closeModal();
-            });
-
-            // --- 4. Handle Table Actions (Edit / Deactivate) ---
-            tableBody.addEventListener('click', (e) => {
-                const target = e.target;
-                const row = target.closest('tr');
-
-                if (!row) return;
-
-                // DELETE Action
-                if (target.classList.contains('delete-btn')) {
-                    rowToDelete = row;
-                    confirmMessage.innerHTML = `Are you sure you want to deactivate the round: <strong>${row.querySelector('.col-name').textContent}</strong>?`;
-                    confirmModal.style.display = 'flex';
-                }
-
-                // EDIT Action
-                if (target.classList.contains('edit-btn')) {
-                    editingRow = row;
-
-                    // Get Data from Row Attributes & Text
-                    const order = row.querySelector('.col-order').textContent;
-                    const name = row.querySelector('.col-name').textContent;
-                    const ruleType = row.getAttribute('data-rule-type');
-                    const ruleVal = row.getAttribute('data-rule-val');
-                    const votingStr = row.getAttribute('data-voting'); // "true" or "false"
-
-                    // Populate Form
-                    roundNameInput.value = name;
-                    roundOrderInput.value = order;
-                    advancementRuleSelect.value = ruleType;
-                    topXValueInput.value = ruleVal;
-                    votingCheckbox.checked = (votingStr === 'true');
-
-                    // Ensure proper UI state for dropdown input
-                    toggleTopXInput();
-                    openModal(true);
-                }
-            });
-
-            // --- 5. Confirmation Modal Logic ---
-            deleteConfirmBtn.addEventListener('click', () => {
-                if (rowToDelete) {
-                    rowToDelete.remove();
-                    rowToDelete = null;
-                }
-                confirmModal.style.display = 'none';
-            });
-
-            cancelConfirmBtn.addEventListener('click', () => {
-                rowToDelete = null;
-                confirmModal.style.display = 'none';
-            });
-        });
-    </script>
 </body>
 </html>

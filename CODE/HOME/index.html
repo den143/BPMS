@@ -4,13 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CrownFlow | Pageant Management System</title>
-    
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
 
@@ -54,7 +54,7 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
+
         /* Card Hover Effects */
         .candidate-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -108,7 +108,7 @@
 
         <!-- PAGE: HOME -->
         <div id="home-page" class="visible-section">
-            
+
             <!-- Hero Section -->
             <header class="hero-bg h-screen flex items-center justify-center text-center px-4 relative">
                 <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-slate-50"></div>
@@ -155,7 +155,7 @@
                     </div>
 
                     <div class="max-w-4xl mx-auto relative border-l-2 border-amber-500/30 ml-4 md:ml-auto">
-                        
+
                         <!-- Event 1 -->
                         <div class="mb-12 pl-8 relative">
                             <div class="absolute -left-2.5 top-1 w-5 h-5 rounded-full bg-amber-500 ring-4 ring-slate-900"></div>
@@ -199,7 +199,7 @@
 
                     <div class="max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
                         <div class="grid grid-cols-1 md:grid-cols-3">
-                            
+
                             <!-- 2nd Place -->
                             <div class="p-8 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col items-center justify-center bg-gray-50 order-2 md:order-1">
                                 <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4 shadow">2</div>
@@ -235,7 +235,7 @@
                     </div>
                 </div>
             </section>
-            
+
             <!-- Footer -->
             <footer class="bg-slate-900 text-white py-8 border-t border-slate-800">
                 <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
@@ -258,7 +258,7 @@
         <div id="login-page" class="hidden-section h-screen bg-slate-100 flex items-center justify-center relative overflow-hidden">
             <!-- Background Decor -->
             <div class="absolute top-0 left-0 w-full h-full bg-cover bg-center opacity-10" style="background-image: url('https://images.unsplash.com/photo-1470229722913-7ea3510133ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');"></div>
-            
+
             <div class="relative w-full max-w-md px-6">
                 <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
                     <div class="p-8 text-center bg-slate-900 text-white relative overflow-hidden">
@@ -284,6 +284,20 @@
                             <div class="flex items-center border border-gray-300 rounded-lg px-3 py-2 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500 transition">
                                 <i class="fa-solid fa-key text-gray-400 mr-3"></i>
                                 <input type="password" id="password" class="w-full outline-none text-gray-700" placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                        <!-- Role Selection -->
+                        <div class="space-y-2">
+                            <label for="role" class="text-sm font-bold text-gray-600 tracking-wide">Role</label>
+                            <div class="flex items-center border border-gray-300 rounded-lg px-3 py-2 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500 transition">
+                                <i class="fa-solid fa-user-shield text-gray-400 mr-3"></i>
+                                <select id="role" class="w-full outline-none text-gray-700 bg-transparent" required>
+                                    <option value="Event Manager">Event Manager</option>
+                                    <option value="Contestant Manager">Contestant Manager</option>
+                                    <option value="Judge Coordinator">Judge Coordinator</option>
+                                    <option value="Tabulator">Tabulator</option>
+                                </select>
                             </div>
                         </div>
 
@@ -365,7 +379,7 @@
             const switchView = (show, hide) => {
                 hide.classList.remove('visible-section');
                 hide.classList.add('hidden-section');
-                
+
                 // Small timeout to allow DOM to update before fading in
                 setTimeout(() => {
                     show.classList.remove('hidden-section');
@@ -382,7 +396,7 @@
                 navbar.classList.remove('hidden'); // Show navbar on home
                 window.scrollTo(0, 0);
             }
-            
+
             // Close mobile menu if open
             document.getElementById('mobile-menu').classList.add('hidden');
         }
@@ -391,7 +405,7 @@
             // Ensure we are on home page first
             const home = document.getElementById('home-page');
             const login = document.getElementById('login-page');
-            
+
             if (login.classList.contains('visible-section')) {
                 navigateTo('home');
                 // Wait for transition then scroll
@@ -403,7 +417,7 @@
                 const el = document.getElementById(sectionId);
                 if(el) el.scrollIntoView({ behavior: 'smooth' });
             }
-            
+
             document.getElementById('mobile-menu').classList.add('hidden');
         }
 
@@ -416,6 +430,7 @@
         function handleLogin(e) {
             e.preventDefault();
             const btn = e.target.querySelector('button');
+            const role = document.getElementById('role').value; // Get selected role
             const originalContent = btn.innerHTML;
 
             // Loading state
@@ -423,15 +438,33 @@
             btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
 
             setTimeout(() => {
-                // Simulate "Success" and redirect back to home as "Logged In" (Mock)
-                alert("Login Successful! Welcome, Admin.");
-                
+                // Store role in sessionStorage
+                sessionStorage.setItem('userRole', role);
+
+                alert(`Login Successful! Welcome, ${role}.`);
+
                 // Reset button
                 btn.innerHTML = originalContent;
                 btn.disabled = false;
-                
-                // For this demo, we just go back to home
-                window.location.href = '/MANAGE-ORGANIZER/organizer.html';
+
+                // Redirect based on role
+                switch (role) {
+                    case 'Event Manager':
+                        window.location.href = '/MANAGE-ORGANIZER/organizer.html';
+                        break;
+                    case 'Contestant Manager':
+                        window.location.href = '/REGISTER_CONTESTANT/contestant.html';
+                        break;
+                    case 'Judge Coordinator':
+                        window.location.href = '/REGISTER_JUDGE/judge.html';
+                        break;
+                    case 'Tabulator':
+                        window.location.href = '/RESULT_PANEL/result.html';
+                        break;
+                    default:
+                        // Default redirect or error message
+                        window.location.href = '/MANAGE-ORGANIZER/organizer.html';
+                }
             }, 1500);
         }
     </script>

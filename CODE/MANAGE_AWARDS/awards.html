@@ -7,12 +7,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
+    <!-- Auth Script -->
+    <script src="/COMMON/auth.js" defer></script>
+
     <!-- Consolidated Styling -->
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f4f4f9; margin: 0; }
         .dashboard-container { display: flex; min-height: 100vh; }
-        
+
         /* Sidebar Styling */
         .sidebar {
             width: 250px;
@@ -44,8 +47,8 @@
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
-        .form-group input[type="text"], .form-group select, .form-group textarea { 
-            width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; 
+        .form-group input[type="text"], .form-group select, .form-group textarea {
+            width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box;
         }
         .radio-group { display: flex; gap: 15px; }
         .form-group-conditional { display: none; padding: 10px; background: #f8f9fa; border-radius: 4px; margin-bottom: 15px; }
@@ -57,14 +60,14 @@
         .status-badge { padding: 4px 8px; border-radius: 12px; font-size: 0.8em; font-weight: 600; }
         .status-active { background: #e8f5e9; color: #2e7d32; }
         .status-inactive { background: #ffebee; color: #c62828; }
-        
+
         /* Buttons */
         .btn { padding: 8px 16px; cursor: pointer; border: none; border-radius: 4px; font-weight: 600; }
         .btn-primary { background: #2196f3; color: white; }
         .btn-action { padding: 4px 8px; margin-right: 5px; cursor: pointer; background: #eee; border: 1px solid #ddd; border-radius: 3px; font-size: 0.85rem; }
         .btn-delete { background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
         .action-buttons { display: flex; gap: 5px; }
-        
+
         /* Responsive Table */
         @media (max-width: 768px) {
             .dashboard-container { flex-direction: column; }
@@ -140,7 +143,7 @@
                         <label for="awardDescription">Description</label>
                         <textarea id="awardDescription" rows="3" placeholder="Briefly describe this award..."></textarea>
                     </div>
-                    
+
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary" id="submitBtn">Save Award</button>
                     </div>
@@ -177,7 +180,7 @@
                     <h2 class="main-title">Manage Awards</h2>
                     <button id="addAwardBtn" class="btn btn-primary">Add New Award</button>
                 </div>
-                
+
                 <!-- Awards Table Card -->
                 <div class="card table-card">
                     <table class="data-table">
@@ -224,229 +227,5 @@
             </div>
         </main>
     </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Modal elements
-            const modal = document.getElementById('awardModal');
-            const addBtn = document.getElementById('addAwardBtn');
-            const closeBtn = document.getElementById('closeModalBtn');
-            const form = document.getElementById('addAwardForm');
-            const tableBody = document.getElementById('awardTableBody');
-            
-            // UI Text elements
-            const modalTitle = document.getElementById('modalTitle');
-            const submitBtn = document.getElementById('submitBtn');
-            
-            // Form Fields
-            const awardNameInput = document.getElementById('awardName');
-            const awardDescInput = document.getElementById('awardDescription');
-            const selectRound = document.getElementById('selectRound');
-            const selectSegment = document.getElementById('selectSegment');
-            
-            // Conditional form elements
-            const awardTypeRadios = document.querySelectorAll('input[name="awardType"]');
-            const roundBasedFields = document.getElementById('roundBasedFields');
-
-            // Custom Confirm Modal Elements
-            const confirmModal = document.getElementById('confirmModal');
-            const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
-            const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
-            const confirmMessage = document.getElementById('confirmMessage');
-
-            // State variables
-            let editingRow = null;
-            let rowToDelete = null;
-
-            // --- Helper: Toggle Conditional Fields ---
-            const toggleFields = (type) => {
-                if (type === 'round-based') {
-                    roundBasedFields.style.display = 'block';
-                } else {
-                    roundBasedFields.style.display = 'none';
-                }
-            };
-
-            // --- Event Listener for Radio Buttons ---
-            awardTypeRadios.forEach(radio => {
-                radio.addEventListener('change', (e) => {
-                    toggleFields(e.target.value);
-                });
-            });
-
-            // --- 1. Open Modal (Create Mode) ---
-            addBtn.addEventListener('click', () => {
-                editingRow = null; // Reset edit state
-                modalTitle.innerText = "Add New Award";
-                submitBtn.innerText = "Save Award";
-                
-                form.reset();
-                // Default to event-wide
-                toggleFields('event-wide');
-                modal.style.display = 'flex';
-            });
-            
-            // --- 2. Close Modal ---
-            const closeModal = () => {
-                modal.style.display = 'none';
-                form.reset();
-                editingRow = null;
-            };
-            
-            closeBtn.addEventListener('click', closeModal);
-            window.addEventListener('click', (event) => {
-                if (event.target === modal) closeModal();
-            });
-
-            // --- 3. Handle Form Submit (Create OR Update) ---
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                // Get Values
-                const name = awardNameInput.value;
-                const description = awardDescInput.value;
-                
-                // Get Selected Radio Value
-                let selectedType = 'event-wide';
-                for (const radio of awardTypeRadios) {
-                    if (radio.checked) {
-                        selectedType = radio.value;
-                        break;
-                    }
-                }
-
-                // Logic for Round/Segment text
-                let roundVal = "";
-                let segmentVal = "";
-                let displayDetails = "N/A";
-                let displayType = "Event-Wide";
-
-                if (selectedType === 'round-based') {
-                    roundVal = selectRound.value;
-                    segmentVal = selectSegment.value;
-                    displayDetails = `${roundVal} / ${segmentVal}`;
-                    displayType = "Round-Based";
-                }
-
-                if (editingRow) {
-                    // === UPDATE EXISTING ROW ===
-                    // Update visual cells
-                    editingRow.querySelector('.col-name').innerText = name;
-                    editingRow.querySelector('.col-type').innerText = displayType;
-                    editingRow.querySelector('.col-details').innerText = displayDetails;
-                    
-                    // Update hidden data attributes (for future editing)
-                    editingRow.setAttribute('data-type', selectedType);
-                    editingRow.setAttribute('data-round', roundVal);
-                    editingRow.setAttribute('data-segment', segmentVal);
-                    editingRow.setAttribute('data-desc', description);
-                    
-                    // console.log("Award updated successfully!");
-                } else {
-                    // === CREATE NEW ROW ===
-                    const newRow = document.createElement('tr');
-                    
-                    // Set data attributes
-                    newRow.setAttribute('data-type', selectedType);
-                    newRow.setAttribute('data-round', roundVal);
-                    newRow.setAttribute('data-segment', segmentVal);
-                    newRow.setAttribute('data-desc', description);
-
-                    newRow.innerHTML = `
-                        <td data-label="Award Name" class="col-name">${name}</td>
-                        <td data-label="Type" class="col-type">${displayType}</td>
-                        <td data-label="Round/Segment" class="col-details">${displayDetails}</td>
-                        <td data-label="Status"><span class="status-badge status-active">Active</span></td>
-                        <td data-label="Actions">
-                            <div class="action-buttons">
-                                <button class="btn-action btn-edit">Edit</button>
-                                <button class="btn-action btn-delete">Cancel</button>
-                            </div>
-                        </td>
-                    `;
-                    tableBody.appendChild(newRow);
-                }
-
-                closeModal();
-            });
-
-            // --- 4. Handle Table Actions (Edit / Delete) ---
-            tableBody.addEventListener('click', (e) => {
-                const target = e.target;
-                const row = target.closest('tr');
-
-                if (!row) return;
-
-                // DELETE Action (Uses custom confirm modal)
-                if (target.classList.contains('btn-delete')) {
-                    rowToDelete = row;
-                    confirmMessage.innerHTML = "Are you sure you want to <strong>cancel/delete</strong> this award?";
-                    deleteConfirmBtn.textContent = "Yes, Delete";
-                    confirmModal.style.display = 'flex';
-                }
-
-                // EDIT Action
-                if (target.classList.contains('btn-edit')) {
-                    editingRow = row; // Set global state
-                    
-                    // 1. Get Data from Row Attributes
-                    const name = row.querySelector('.col-name').innerText;
-                    const type = row.getAttribute('data-type');
-                    const round = row.getAttribute('data-round');
-                    const segment = row.getAttribute('data-segment');
-                    const desc = row.getAttribute('data-desc');
-
-                    // 2. Populate Form Inputs
-                    awardNameInput.value = name;
-                    awardDescInput.value = desc;
-
-                    // 3. Handle Radio Button & Conditional Display
-                    awardTypeRadios.forEach(r => r.checked = false);
-                    const radioToSelect = document.querySelector(`input[name="awardType"][value="${type}"]`);
-                    if (radioToSelect) radioToSelect.checked = true;
-                    
-                    toggleFields(type); // Show/Hide Dropdowns based on type
-
-                    // 4. Set Dropdown Values if Round-Based
-                    if (type === 'round-based') {
-                        selectRound.value = round;
-                        selectSegment.value = segment;
-                    }
-
-                    // 5. Update Modal Title
-                    modalTitle.innerText = "Edit Award";
-                    submitBtn.innerText = "Update Award";
-
-                    // 6. Show Modal
-                    modal.style.display = 'flex';
-                }
-            });
-            
-            // --- Custom Confirmation Modal Logic ---
-
-            deleteConfirmBtn.addEventListener('click', () => {
-                if (rowToDelete) {
-                    rowToDelete.remove();
-                    rowToDelete = null;
-                    console.log("Award deleted successfully.");
-                }
-                confirmModal.style.display = 'none';
-            });
-
-            cancelConfirmBtn.addEventListener('click', () => {
-                rowToDelete = null;
-                confirmModal.style.display = 'none';
-            });
-            
-            // Close confirm modal if user clicks on the overlay
-            window.addEventListener('click', (event) => {
-                if (event.target === confirmModal) {
-                    rowToDelete = null;
-                    confirmModal.style.display = 'none';
-                }
-            });
-
-        });
-    </script>
 </body>
 </html>

@@ -7,13 +7,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
+    <!-- Auth Script -->
+    <script src="/COMMON/auth.js" defer></script>
+
     <!-- Consolidated Styling -->
     <style>
         /* Base Styles */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f4f4f9; 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f9;
             margin: 0;
         }
         .dashboard-container {
@@ -99,13 +102,13 @@
             overflow-x: auto;
             margin-top: 20px;
         }
-        .data-table { 
-            width: 100%; 
-            border-collapse: collapse; 
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .data-table th, .data-table td { 
-            padding: 15px 20px; 
-            border-bottom: 1px solid #f0f0f0; 
+        .data-table th, .data-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
             text-align: left;
             font-size: 0.95rem;
         }
@@ -119,41 +122,41 @@
         }
 
         /* Buttons and Actions */
-        .btn { 
-            padding: 10px 20px; 
-            cursor: pointer; 
-            border: none; 
-            border-radius: 6px; 
+        .btn {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
             transition: all 0.2s;
             font-weight: 600;
         }
-        .btn-primary { 
-            background: #2196f3; 
-            color: white; 
+        .btn-primary {
+            background: #2196f3;
+            color: white;
         }
         .btn-primary:hover {
             background: #1e88e5;
         }
-        .btn-action { 
-            padding: 6px 12px; 
-            margin-right: 5px; 
-            cursor: pointer; 
-            background: #f0f0f0; 
-            color: #333; 
-            border: 1px solid #ddd; 
+        .btn-action {
+            padding: 6px 12px;
+            margin-right: 5px;
+            cursor: pointer;
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 0.85rem;
         }
         .btn-action:hover {
             background: #e0e0e0;
         }
-        .btn-action-danger { 
-            background-color: #ffebee; 
-            color: #c62828; 
-            border: 1px solid #ef9a9a; 
+        .btn-action-danger {
+            background-color: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
         }
         .btn-action-danger:hover {
-            background-color: #ffcdd2; 
+            background-color: #ffcdd2;
         }
         .action-buttons {
             display: flex;
@@ -161,26 +164,26 @@
         }
 
         /* Modal Overlays */
-        .modal-overlay { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.6); 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 1000; 
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
             padding: 20px;
         }
-        .modal-content { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 10px; 
-            width: 600px; 
-            max-width: 95%; 
-            max-height: 90vh; 
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 600px;
+            max-width: 95%;
+            max-height: 90vh;
             overflow-y: auto;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
@@ -190,22 +193,22 @@
             height: auto;
             overflow-y: visible;
         }
-        .modal-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 25px; 
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
         }
         .modal-header h2 {
             margin: 0;
             font-size: 1.75rem;
             color: #333;
         }
-        .close-button { 
-            border:none; 
-            background:none; 
-            font-size:2rem; 
-            cursor:pointer; 
+        .close-button {
+            border:none;
+            background:none;
+            font-size:2rem;
+            cursor:pointer;
             color: #999;
             transition: color 0.2s;
         }
@@ -214,20 +217,20 @@
         }
 
         /* Form Styles */
-        .form-group { 
-            margin-bottom: 20px; 
+        .form-group {
+            margin-bottom: 20px;
         }
-        .form-group label { 
-            display: block; 
-            margin-bottom: 8px; 
-            font-weight: 500; 
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
             color: #555;
         }
-        .form-group input, .form-group select, .form-group textarea { 
-            width: 100%; 
-            padding: 10px; 
-            border: 1px solid #ddd; 
-            border-radius: 6px; 
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
             box-sizing: border-box;
             transition: border-color 0.2s;
         }
@@ -235,10 +238,10 @@
             border-color: #2196f3;
             outline: none;
         }
-        .form-group-inline { 
-            display: flex; 
-            align-items: center; 
-            gap: 10px; 
+        .form-group-inline {
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
         .form-actions {
             margin-top: 30px;
@@ -246,56 +249,56 @@
         }
 
         /* Criteria Section Styles */
-        .criteria-section { 
-            border-top: 1px solid #eee; 
-            margin-top: 25px; 
-            padding-top: 20px; 
+        .criteria-section {
+            border-top: 1px solid #eee;
+            margin-top: 25px;
+            padding-top: 20px;
         }
-        .criteria-header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            margin-bottom: 15px; 
+        .criteria-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
         }
-        .criteria-header h3 { 
-            margin: 0; 
-            font-size: 1.1rem; 
-            color: #333; 
-            font-weight: 600; 
+        .criteria-header h3 {
+            margin: 0;
+            font-size: 1.1rem;
+            color: #333;
+            font-weight: 600;
         }
-        .btn-link { 
-            background: none; 
-            border: none; 
-            color: #2196f3; 
-            cursor: pointer; 
-            font-weight: 600; 
+        .btn-link {
+            background: none;
+            border: none;
+            color: #2196f3;
+            cursor: pointer;
+            font-weight: 600;
             font-size: 0.9rem;
         }
         .btn-link:hover {
             text-decoration: underline;
         }
-        
-        .criteria-item { 
-            background: #f9f9f9; 
-            border: 1px solid #eee; 
-            padding: 15px; 
-            border-radius: 6px; 
-            margin-bottom: 10px; 
+
+        .criteria-item {
+            background: #f9f9f9;
+            border: 1px solid #eee;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
         }
-        .criteria-item-header { 
-            display: flex; 
-            gap: 10px; 
-            margin-bottom: 10px; 
+        .criteria-item-header {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
         }
         .criteria-name { flex: 2; }
         .criteria-points { flex: 1; }
-        .remove-criteria-btn { 
-            background: #ffebee; 
-            color: #c62828; 
-            border: 1px solid #ef9a9a; 
-            border-radius: 4px; 
-            cursor: pointer; 
-            padding: 0 12px; 
+        .remove-criteria-btn {
+            background: #ffebee;
+            color: #c62828;
+            border: 1px solid #ef9a9a;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 0 12px;
             font-weight: bold;
             font-size: 1.2rem;
             line-height: 1;
@@ -368,7 +371,7 @@
                             <!-- Dynamic criteria items will be added here -->
                         </div>
                     </div>
-                    
+
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary" id="submitBtn">Save Segment</button>
                     </div>
@@ -376,7 +379,7 @@
             </div>
         </div>
     </div>
-    
+
     <!-- Template for a single criteria item (hidden) -->
     <div id="criteriaTemplate" style="display: none;">
         <div class="criteria-item">
@@ -429,7 +432,7 @@
                     </div>
                     <button id="addSegmentBtn" class="btn btn-primary">Add Segment</button>
                 </div>
-                
+
                 <!-- Segments Table Card -->
                 <div class="card">
                     <table class="data-table">
@@ -445,7 +448,7 @@
                         <tbody id="segmentTableBody">
                             <!-- Static Row 1 -->
                             <!-- We store the criteria list as a JSON string in data-criteria -->
-                            <tr data-desc="Standard Q&A portion" 
+                            <tr data-desc="Standard Q&A portion"
                                 data-criteria='[{"name":"Intelligence","points":"50","desc":"Content of answer"},{"name":"Confidence","points":"30","desc":"Delivery"},{"name":"Poise","points":"20","desc":"Posture"}]'>
                                 <td class="col-name" data-label="Segment Name">Question & Answer</td>
                                 <td class="col-weight" data-label="Weight (%)">40%</td>
@@ -458,7 +461,7 @@
                                 </td>
                             </tr>
                             <!-- Static Row 2 -->
-                            <tr data-desc="Talent showcase" 
+                            <tr data-desc="Talent showcase"
                                 data-criteria='[{"name":"Skill","points":"40","desc":""},{"name":"Creativity","points":"30","desc":""},{"name":"Audience Impact","points":"30","desc":""}]'>
                                 <td class="col-name" data-label="Segment Name">Talent Portion</td>
                                 <td class="col-weight" data-label="Weight (%)">30%</td>
@@ -476,228 +479,5 @@
             </div>
         </main>
     </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // Elements
-            const modal = document.getElementById('segmentModal');
-            const addBtn = document.getElementById('addSegmentBtn');
-            const closeBtn = document.getElementById('closeModalBtn');
-            const form = document.getElementById('segmentForm');
-            const tableBody = document.getElementById('segmentTableBody');
-            const submitBtn = document.getElementById('submitBtn');
-            const modalTitle = document.getElementById('modalTitle');
-
-            // Form Inputs
-            const nameInput = document.getElementById('segmentName');
-            const weightInput = document.getElementById('segmentWeight');
-            const descInput = document.getElementById('segmentDescription');
-            
-            // Criteria Elements
-            const addCriteriaBtn = document.getElementById('addCriteriaBtn');
-            const criteriaList = document.getElementById('criteriaList');
-            const criteriaTemplate = document.getElementById('criteriaTemplate');
-
-            // Round Selector Logic
-            const roundSelector = document.getElementById('roundSelector');
-            const mainTitle = document.getElementById('mainTitle');
-
-            // Confirmation Modal Elements
-            const confirmModal = document.getElementById('confirmModal');
-            const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
-            const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
-            const confirmMessage = document.getElementById('confirmMessage');
-
-            let editingRow = null;
-            let rowToDelete = null;
-
-            // --- 1. Round Selector Logic ---
-            roundSelector.addEventListener('change', (event) => {
-                const selectedRound = event.target.options[event.target.selectedIndex].text;
-                mainTitle.textContent = 'Segments for ' + selectedRound;
-            });
-
-            // --- 2. Criteria Helper Functions ---
-            const addCriteriaItem = (data = null) => {
-                // Clone the template
-                const newCriteria = criteriaTemplate.firstElementChild.cloneNode(true);
-                
-                // If data exists (Edit mode), populate fields
-                if (data) {
-                    newCriteria.querySelector('.criteria-name').value = data.name;
-                    newCriteria.querySelector('.criteria-points').value = data.points;
-                    newCriteria.querySelector('.criteria-description').value = data.desc;
-                }
-
-                criteriaList.appendChild(newCriteria);
-            };
-
-            // Add Criteria Button Click
-            addCriteriaBtn.addEventListener('click', () => addCriteriaItem());
-
-            // Remove Criteria Button Click (Event Delegation)
-            criteriaList.addEventListener('click', (event) => {
-                if (event.target.classList.contains('remove-criteria-btn')) {
-                    event.target.closest('.criteria-item').remove();
-                }
-            });
-
-            // --- 3. Open Modal (Create) ---
-            const openModal = (isEdit = false) => {
-                modal.style.display = 'flex';
-                if (!isEdit) {
-                    form.reset();
-                    editingRow = null;
-                    modalTitle.textContent = "Add New Segment";
-                    submitBtn.textContent = "Save Segment";
-                    criteriaList.innerHTML = ''; // Clear existing list
-                    addCriteriaItem(); // Add one empty row by default
-                } else {
-                    modalTitle.textContent = "Edit Segment";
-                    submitBtn.textContent = "Update Segment";
-                }
-            };
-
-            // --- 4. Close Modal ---
-            const closeModal = () => {
-                modal.style.display = 'none';
-                form.reset();
-                editingRow = null;
-            }
-            
-            addBtn.addEventListener('click', () => openModal(false));
-            closeBtn.addEventListener('click', closeModal);
-            
-            window.addEventListener('click', (e) => { 
-                if (e.target === modal) closeModal();
-                if (e.target === confirmModal) confirmModal.style.display = 'none';
-            });
-
-            // --- 5. Handle Form Submit (Create / Update) ---
-            form.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                // Get Basic Values
-                const name = nameInput.value;
-                const weight = weightInput.value + '%'; // Append % for display
-                const desc = descInput.value;
-
-                // Get Criteria Values
-                const criteriaItems = [];
-                let totalPoints = 0;
-                
-                document.querySelectorAll('#criteriaList .criteria-item').forEach(item => {
-                    const cName = item.querySelector('.criteria-name').value;
-                    const cPoints = item.querySelector('.criteria-points').value;
-                    const cDesc = item.querySelector('.criteria-description').value;
-                    
-                    if (cName && cPoints) {
-                        totalPoints += parseInt(cPoints);
-                        criteriaItems.push({
-                            name: cName,
-                            points: cPoints,
-                            desc: cDesc
-                        });
-                    }
-                });
-
-                // Construct Summary String
-                const count = criteriaItems.length;
-                const summary = `${count} criteria (${totalPoints}pts total)`;
-
-                // JSON Stringify for storage
-                const criteriaJson = JSON.stringify(criteriaItems);
-
-                if (editingRow) {
-                    // === UPDATE ===
-                    editingRow.querySelector('.col-name').textContent = name;
-                    editingRow.querySelector('.col-weight').textContent = weight;
-                    editingRow.querySelector('.col-summary').textContent = summary;
-                    
-                    // Update Attributes
-                    editingRow.setAttribute('data-desc', desc);
-                    editingRow.setAttribute('data-criteria', criteriaJson);
-                    
-                    console.log("Segment Updated!");
-                } else {
-                    // === CREATE ===
-                    const newRow = document.createElement('tr');
-                    newRow.setAttribute('data-desc', desc);
-                    newRow.setAttribute('data-criteria', criteriaJson);
-                    
-                    newRow.innerHTML = `
-                        <td class="col-name" data-label="Segment Name">${name}</td>
-                        <td class="col-weight" data-label="Weight (%)">${weight}</td>
-                        <td class="col-summary" data-label="Criteria (Summary)">${summary}</td>
-                        <td data-label="Actions">
-                            <div class="action-buttons">
-                                <button class="btn-action edit-btn">Edit</button>
-                                <button class="btn-action btn-action-danger delete-btn">Deactivate</button>
-                            </div>
-                        </td>
-                    `;
-                    tableBody.appendChild(newRow);
-                }
-                closeModal();
-            });
-
-            // --- 6. Handle Table Actions (Edit / Deactivate) ---
-            tableBody.addEventListener('click', (e) => {
-                const target = e.target;
-                const row = target.closest('tr');
-
-                if (!row) return;
-
-                // DEACTIVATE (Using Custom Confirm)
-                if (target.classList.contains('delete-btn')) {
-                    rowToDelete = row;
-                    confirmMessage.innerHTML = `Are you sure you want to deactivate the segment: <strong>${row.querySelector('.col-name').textContent}</strong>?`;
-                    confirmModal.style.display = 'flex';
-                }
-
-                // EDIT
-                if (target.classList.contains('edit-btn')) {
-                    editingRow = row;
-
-                    // Get Data
-                    const name = row.querySelector('.col-name').textContent;
-                    let weight = row.querySelector('.col-weight').textContent;
-                    const desc = row.getAttribute('data-desc');
-                    const criteriaJson = row.getAttribute('data-criteria');
-
-                    // Populate Basic Form
-                    nameInput.value = name;
-                    weightInput.value = weight.replace('%', ''); // Remove % for number input
-                    descInput.value = desc;
-
-                    // Populate Criteria List
-                    criteriaList.innerHTML = '';
-                    if (criteriaJson) {
-                        const criteriaData = JSON.parse(criteriaJson);
-                        criteriaData.forEach(item => addCriteriaItem(item));
-                    } else {
-                        addCriteriaItem();
-                    }
-
-                    openModal(true);
-                }
-            });
-
-            // --- 7. Confirmation Modal Logic ---
-            deleteConfirmBtn.addEventListener('click', () => {
-                if (rowToDelete) {
-                    rowToDelete.remove();
-                    rowToDelete = null;
-                    console.log("Segment Deactivated.");
-                }
-                confirmModal.style.display = 'none';
-            });
-
-            cancelConfirmBtn.addEventListener('click', () => {
-                rowToDelete = null;
-                confirmModal.style.display = 'none';
-            });
-        });
-    </script>
 </body>
 </html>

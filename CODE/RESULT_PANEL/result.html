@@ -7,13 +7,16 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
+    <!-- Auth Script -->
+    <script src="/COMMON/auth.js" defer></script>
+
     <!-- Consolidated Styling -->
     <style>
         /* Base Styles */
-        body { 
-            font-family: 'Inter', sans-serif; 
-            background-color: #f4f4f9; 
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f4f4f9;
             margin: 0;
         }
         .dashboard-container {
@@ -90,13 +93,13 @@
             overflow-x: auto;
             margin-bottom: 20px;
         }
-        .data-table { 
-            width: 100%; 
-            border-collapse: collapse; 
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
         }
-        .data-table th, .data-table td { 
-            padding: 15px 20px; 
-            border-bottom: 1px solid #f0f0f0; 
+        .data-table th, .data-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid #f0f0f0;
             text-align: left;
             font-size: 0.95rem;
             vertical-align: middle;
@@ -134,25 +137,25 @@
         .btn-action:hover { background: #e0e0e0; }
 
         /* Modal Overlays */
-        .modal-overlay { 
-            display: none; 
-            position: fixed; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.6); 
-            justify-content: center; 
-            align-items: center; 
-            z-index: 1000; 
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
             padding: 20px;
         }
-        .modal-content { 
-            background: white; 
-            padding: 30px; 
-            border-radius: 10px; 
-            width: 450px; 
-            max-width: 95%; 
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 450px;
+            max-width: 95%;
             box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
@@ -163,7 +166,7 @@
         /* Form Styles */
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
-        .form-group input { 
+        .form-group input {
             width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; transition: border-color 0.2s;
         }
         .form-group input:focus { border-color: #2196f3; outline: none; }
@@ -183,26 +186,26 @@
 
         .view-switcher { display: flex; gap: 5px; background: #f0f0f0; padding: 4px; border-radius: 8px; }
         .view-switcher input[type=radio] { display: none; }
-        .view-switcher label { 
-            padding: 8px 16px; 
-            border-radius: 6px; 
-            cursor: pointer; 
-            font-size: 0.9em; 
+        .view-switcher label {
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
             font-weight: 500;
             color: #666;
             transition: all 0.2s;
         }
-        .view-switcher input[type=radio]:checked + label { 
-            background: white; 
-            color: #2196f3; 
+        .view-switcher input[type=radio]:checked + label {
+            background: white;
+            color: #2196f3;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             font-weight: 600;
         }
 
         /* Notification Banner */
-        .notification-banner { 
-            position: fixed; top: -100px; left: 50%; transform: translateX(-50%); 
-            background: #333; color: white; padding: 15px 30px; border-radius: 50px; 
+        .notification-banner {
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%);
+            background: #333; color: white; padding: 15px 30px; border-radius: 50px;
             transition: top 0.5s ease; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-weight: 500;
         }
         .notification-banner.show { top: 20px; }
@@ -311,7 +314,7 @@
                         <div class="view-switcher">
                             <input type="radio" id="viewLeaderboard" name="viewType" value="leaderboardView" checked>
                             <label for="viewLeaderboard">Leaderboard</label>
-                            
+
                             <input type="radio" id="viewJudge" name="viewType" value="judgeBreakdownView">
                             <label for="viewJudge">Judge Breakdown</label>
 
@@ -320,7 +323,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <!-- Leaderboard View (Default) -->
                 <div id="leaderboardView" class="view-content">
                     <h3 class="table-title">Leaderboard</h3>
@@ -407,7 +410,7 @@
                         </table>
                     </div>
                 </div>
-                
+
                 <!-- Segment Breakdown View -->
                 <div id="segmentBreakdownView" class="view-content" style="display: none;">
                     <h3 class="table-title">Segment Breakdown</h3>
@@ -485,114 +488,5 @@
             </div>
         </main>
     </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // --- Notification ---
-            const notification = document.getElementById('notification');
-            const notificationMessage = document.getElementById('notificationMessage');
-
-            const showNotification = (message, type) => {
-                notificationMessage.textContent = message;
-                notification.className = `notification-banner show ${type}`;
-                setTimeout(() => { notification.className = 'notification-banner'; }, 3000);
-            };
-
-            // --- Export Button Logic ---
-            const exportBtn = document.getElementById('exportBtn');
-            exportBtn.addEventListener('click', () => {
-                showNotification('Exporting PDF Report...', 'info');
-            });
-
-            // --- View Switcher Logic ---
-            const viewRadios = document.querySelectorAll('input[name="viewType"]');
-            const contentDivs = document.querySelectorAll('.view-content');
-
-            const handleViewChange = (event) => {
-                const selectedViewId = event.target.value;
-                contentDivs.forEach(div => {
-                    div.style.display = 'none';
-                });
-                const viewToShow = document.getElementById(selectedViewId);
-                if (viewToShow) viewToShow.style.display = 'block';
-            };
-
-            viewRadios.forEach(radio => radio.addEventListener('change', handleViewChange));
-
-            // --- Edit Score Modal Logic ---
-            const modal = document.getElementById('scoreModal');
-            const closeModalBtn = document.getElementById('closeModalBtn');
-            const scoreForm = document.getElementById('scoreForm');
-            
-            // Inputs
-            const nameInput = document.getElementById('contestantName');
-            const talentInput = document.getElementById('scoreTalent');
-            const swimInput = document.getElementById('scoreSwimsuit');
-            const gownInput = document.getElementById('scoreGown');
-
-            let editingRow = null;
-
-            const closeModal = () => {
-                modal.style.display = 'none';
-                scoreForm.reset();
-                editingRow = null;
-            };
-
-            closeModalBtn.addEventListener('click', closeModal);
-            window.addEventListener('click', (e) => { if (e.target === modal) closeModal() });
-
-            // 1. Handle "Edit" Clicks in Leaderboard
-            document.getElementById('leaderboardBody').addEventListener('click', (e) => {
-                if (e.target.classList.contains('edit-score-btn')) {
-                    const row = e.target.closest('tr');
-                    editingRow = row;
-
-                    // Get current values
-                    const name = row.querySelector('.col-name').textContent;
-                    const talent = parseFloat(row.querySelector('.col-talent').textContent);
-                    const swim = parseFloat(row.querySelector('.col-swim').textContent);
-                    const gown = parseFloat(row.querySelector('.col-gown').textContent);
-
-                    // Populate Modal
-                    nameInput.value = name;
-                    talentInput.value = talent;
-                    swimInput.value = swim;
-                    gownInput.value = gown;
-
-                    modal.style.display = 'flex';
-                }
-            });
-
-            // 2. Handle Score Form Submit (Recalculate Logic)
-            scoreForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-
-                if (editingRow) {
-                    const newTalent = parseFloat(talentInput.value);
-                    const newSwim = parseFloat(swimInput.value);
-                    const newGown = parseFloat(gownInput.value);
-
-                    // Calculate Average
-                    const average = ((newTalent + newSwim + newGown) / 3).toFixed(2);
-
-                    // Determine Status (Simple logic: > 92 is Qualified)
-                    const isQualified = average >= 92.0;
-                    const statusHtml = isQualified 
-                        ? '<span class="status-badge status-qualified">Qualified</span>' 
-                        : '<span class="status-badge status-eliminated">Eliminated</span>';
-
-                    // Update Table
-                    editingRow.querySelector('.col-talent').textContent = newTalent;
-                    editingRow.querySelector('.col-swim').textContent = newSwim;
-                    editingRow.querySelector('.col-gown').textContent = newGown;
-                    editingRow.querySelector('.col-total').textContent = average;
-                    editingRow.querySelector('.col-status').innerHTML = statusHtml;
-
-                    showNotification(`Scores updated for ${nameInput.value}. New Average: ${average}`, 'success');
-                    closeModal();
-                }
-            });
-        });
-    </script>
 </body>
 </html>

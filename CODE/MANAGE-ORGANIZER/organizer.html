@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/COMMON/auth.js" defer></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Manager</title>
@@ -534,6 +535,25 @@
                 rowToDelete = null;
                 confirmModal.style.display = 'none';
             });
+
+            // --- Sidebar Role-Based Visibility ---
+            const userRole = sessionStorage.getItem('userRole');
+            const sidebarNav = document.querySelector('.sidebar-nav ul');
+
+            if (userRole && ROLES[userRole]) {
+                const authorizedLinks = ROLES[userRole];
+                sidebarNav.querySelectorAll('li a').forEach(link => {
+                    const linkPath = link.getAttribute('href');
+                    if (!authorizedLinks.includes(linkPath) && linkPath !== '#') {
+                        link.parentElement.style.display = 'none';
+                    }
+                });
+            } else {
+                // If no role or invalid role, hide all links
+                sidebarNav.querySelectorAll('li').forEach(li => {
+                    li.style.display = 'none';
+                });
+            }
         });
     </script>
 </body>
