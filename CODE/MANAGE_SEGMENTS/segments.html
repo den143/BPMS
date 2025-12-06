@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -700,4 +701,708 @@
         });
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Segments Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Consolidated Styling -->
+    <style>
+        /* Base Styles */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f4f4f9; 
+            margin: 0;
+        }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sidebar-title {
+            font-size: 1.5rem;
+            color: #2196f3;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-nav li a {
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .sidebar-nav li a:hover, .sidebar-nav li a.active {
+            background-color: #e3f2fd;
+            color: #2196f3;
+            font-weight: 600;
+        }
+        .sidebar-footer a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            padding: 20px 40px;
+        }
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .main-header.with-dropdown {
+            align-items: flex-start; /* Align specifically for Segments layout */
+        }
+        .title-and-dropdown {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .main-title {
+            font-size: 2rem;
+            color: #333;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        /* Table Styling */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+        .data-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        .data-table th, .data-table td { 
+            padding: 15px 20px; 
+            border-bottom: 1px solid #f0f0f0; 
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .data-table th {
+            background-color: #f7f9fc;
+            font-weight: 600;
+            color: #555;
+        }
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Buttons and Actions */
+        .btn { 
+            padding: 10px 20px; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 6px; 
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .btn-primary { 
+            background: #2196f3; 
+            color: white; 
+        }
+        .btn-primary:hover {
+            background: #1e88e5;
+        }
+        .btn-action { 
+            padding: 6px 12px; 
+            margin-right: 5px; 
+            cursor: pointer; 
+            background: #f0f0f0; 
+            color: #333; 
+            border: 1px solid #ddd; 
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .btn-action:hover {
+            background: #e0e0e0;
+        }
+        .btn-action-danger { 
+            background-color: #ffebee; 
+            color: #c62828; 
+            border: 1px solid #ef9a9a; 
+        }
+        .btn-action-danger:hover {
+            background-color: #ffcdd2; 
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Modal Overlays */
+        .modal-overlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+            padding: 20px;
+        }
+        .modal-content { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            width: 600px; 
+            max-width: 95%; 
+            max-height: 90vh; 
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-content.confirm {
+            width: 350px;
+            padding: 25px;
+            height: auto;
+            overflow-y: visible;
+        }
+        .modal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 25px; 
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.75rem;
+            color: #333;
+        }
+        .close-button { 
+            border:none; 
+            background:none; 
+            font-size:2rem; 
+            cursor:pointer; 
+            color: #999;
+            transition: color 0.2s;
+        }
+        .close-button:hover {
+            color: #333;
+        }
+
+        /* Form Styles */
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 500; 
+            color: #555;
+        }
+        .form-group input, .form-group select, .form-group textarea { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus {
+            border-color: #2196f3;
+            outline: none;
+        }
+        .form-group-inline { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+        }
+        .form-actions {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        /* Criteria Section Styles */
+        .criteria-section { 
+            border-top: 1px solid #eee; 
+            margin-top: 25px; 
+            padding-top: 20px; 
+        }
+        .criteria-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 15px; 
+        }
+        .criteria-header h3 { 
+            margin: 0; 
+            font-size: 1.1rem; 
+            color: #333; 
+            font-weight: 600; 
+        }
+        .btn-link { 
+            background: none; 
+            border: none; 
+            color: #2196f3; 
+            cursor: pointer; 
+            font-weight: 600; 
+            font-size: 0.9rem;
+        }
+        .btn-link:hover {
+            text-decoration: underline;
+        }
+        
+        .criteria-item { 
+            background: #f9f9f9; 
+            border: 1px solid #eee; 
+            padding: 15px; 
+            border-radius: 6px; 
+            margin-bottom: 10px; 
+        }
+        .criteria-item-header { 
+            display: flex; 
+            gap: 10px; 
+            margin-bottom: 10px; 
+        }
+        .criteria-name { flex: 2; }
+        .criteria-points { flex: 1; }
+        .remove-criteria-btn { 
+            background: #ffebee; 
+            color: #c62828; 
+            border: 1px solid #ef9a9a; 
+            border-radius: 4px; 
+            cursor: pointer; 
+            padding: 0 12px; 
+            font-weight: bold;
+            font-size: 1.2rem;
+            line-height: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .remove-criteria-btn:hover {
+            background-color: #ffcdd2;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #e0e0e0; }
+            .main-content { padding: 20px; }
+            .data-table thead { display: none; }
+            .data-table tr { display: block; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; }
+            .data-table td { display: block; text-align: right; padding: 10px 15px; position: relative; border-bottom: 1px solid #eee; }
+            .data-table td::before { content: attr(data-label); position: absolute; left: 15px; font-weight: 600; color: #555; }
+            .action-buttons { justify-content: flex-end; }
+            .criteria-item-header { flex-direction: column; }
+            .remove-criteria-btn { width: 100%; padding: 5px; margin-top: 5px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Confirmation Modal (Custom Alert/Confirm) -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content confirm">
+            <p id="confirmMessage" style="margin-bottom: 25px; font-weight: 500; font-size: 1.1rem; color: #333;">Are you sure you want to proceed?</p>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button id="cancelConfirmBtn" class="btn" style="background: #e0e0e0; color: #333; font-weight: 500;">No</button>
+                <button id="deleteConfirmBtn" class="btn btn-action-danger">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Segment Modal -->
+    <div id="segmentModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Segment</h2>
+                <button id="closeModalBtn" class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Added ID to form -->
+                <form class="modal-form" id="segmentForm">
+                    <div class="form-group">
+                        <label for="segmentName">Segment Name</label>
+                        <input type="text" id="segmentName" placeholder="e.g., Question & Answer" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="segmentWeight">Weight (%)</label>
+                        <input type="number" id="segmentWeight" placeholder="e.g., 40" min="0" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="segmentDescription">Description</label>
+                        <textarea id="segmentDescription" rows="3" placeholder="Briefly describe this segment..."></textarea>
+                    </div>
+
+                    <!-- Criteria for Judging Section -->
+                    <div class="criteria-section">
+                        <div class="criteria-header">
+                            <h3>Criteria for Judging</h3>
+                            <button type="button" id="addCriteriaBtn" class="btn-link">+ Add Criteria</button>
+                        </div>
+                        <div id="criteriaList">
+                            <!-- Dynamic criteria items will be added here -->
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Save Segment</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Template for a single criteria item (hidden) -->
+    <div id="criteriaTemplate" style="display: none;">
+        <div class="criteria-item">
+            <div class="criteria-item-header">
+                <input type="text" class="criteria-name" placeholder="Criteria Name" required>
+                <input type="number" class="criteria-points" placeholder="Points" required>
+                <button type="button" class="remove-criteria-btn" title="Remove">&times;</button>
+            </div>
+            <textarea class="criteria-description" rows="2" placeholder="Criteria Description..."></textarea>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div>
+                <h1 class="sidebar-title">Event Manager</h1>
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="../MANAGE-ORGANIZER/organizer.html" type="button" onclick="index.html">Manage Organizers</a></li>
+                        <li><a href="../MAANGE_ACTIVITY/activities.html" type="button" onclick="activities.html">Manage Activities</a></li>
+                        <li><a href="../MANAGE_ROUNDS/rounds.html" type="button" onclick="rounds.html">Manage Rounds</a></li>
+                        <li><a href="#" class="active">Manage Segments</a></li>
+                        <li><a href="../MANAGE_AWARDS/awards.html" type="button" onclick="awards.html">Manage Awards</a></li>
+                        <li><a href="../REGISTER_CONTESTANT/contestant.html" type="button" onclick="contestant.html">Register Contestant</a></li>
+                        <li><a href="../REGISTER_JUDGE/judge.html" type="button" onclick="judge.html">Register Judge</a></li>
+                        <li><a href="../RESULT_PANEL/result.html" type="button" onclick="result.html">Result Panel</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+               <a href="#">Settings</a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <div class="main-header with-dropdown">
+                    <div class="title-and-dropdown">
+                        <h2 id="mainTitle" class="main-title">Segments for Preliminary Round</h2>
+                        <div class="form-group-inline" style="margin-top:5px;">
+                            <label for="roundSelector" style="font-size:0.9rem; color:#666;">Choose Round:</label>
+                            <select id="roundSelector" style="padding:6px; border-radius:4px; border:1px solid #ddd;">
+                                <option value="Preliminary" selected>Preliminary Round</option>
+                                <option value="Semifinal">Semifinal Round</option>
+                                <option value="Final">Final Round</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="addSegmentBtn" class="btn btn-primary">Add Segment</button>
+                </div>
+                
+                <!-- Segments Table Card -->
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Segment Name</th>
+                                <th>Weight (%)</th>
+                                <th>Criteria (Summary)</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <!-- Added ID to TBODY -->
+                        <tbody id="segmentTableBody">
+                            <!-- Static Row 1 -->
+                            <!-- We store the criteria list as a JSON string in data-criteria -->
+                            <tr data-desc="Standard Q&A portion" 
+                                data-criteria='[{"name":"Intelligence","points":"50","desc":"Content of answer"},{"name":"Confidence","points":"30","desc":"Delivery"},{"name":"Poise","points":"20","desc":"Posture"}]'>
+                                <td class="col-name" data-label="Segment Name">Question & Answer</td>
+                                <td class="col-weight" data-label="Weight (%)">40%</td>
+                                <td class="col-summary" data-label="Criteria (Summary)">3 criteria (100pts total)</td>
+                                <td data-label="Actions">
+                                    <div class="action-buttons">
+                                        <button class="btn-action edit-btn">Edit</button>
+                                        <button class="btn-action btn-action-danger delete-btn">Deactivate</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Static Row 2 -->
+                            <tr data-desc="Talent showcase" 
+                                data-criteria='[{"name":"Skill","points":"40","desc":""},{"name":"Creativity","points":"30","desc":""},{"name":"Audience Impact","points":"30","desc":""}]'>
+                                <td class="col-name" data-label="Segment Name">Talent Portion</td>
+                                <td class="col-weight" data-label="Weight (%)">30%</td>
+                                <td class="col-summary" data-label="Criteria (Summary)">3 criteria (100pts total)</td>
+                                <td data-label="Actions">
+                                    <div class="action-buttons">
+                                        <button class="btn-action edit-btn">Edit</button>
+                                        <button class="btn-action btn-action-danger delete-btn">Deactivate</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const modal = document.getElementById('segmentModal');
+            const addBtn = document.getElementById('addSegmentBtn');
+            const closeBtn = document.getElementById('closeModalBtn');
+            const form = document.getElementById('segmentForm');
+            const tableBody = document.getElementById('segmentTableBody');
+            const submitBtn = document.getElementById('submitBtn');
+            const modalTitle = document.getElementById('modalTitle');
+
+            // Form Inputs
+            const nameInput = document.getElementById('segmentName');
+            const weightInput = document.getElementById('segmentWeight');
+            const descInput = document.getElementById('segmentDescription');
+            
+            // Criteria Elements
+            const addCriteriaBtn = document.getElementById('addCriteriaBtn');
+            const criteriaList = document.getElementById('criteriaList');
+            const criteriaTemplate = document.getElementById('criteriaTemplate');
+
+            // Round Selector Logic
+            const roundSelector = document.getElementById('roundSelector');
+            const mainTitle = document.getElementById('mainTitle');
+
+            // Confirmation Modal Elements
+            const confirmModal = document.getElementById('confirmModal');
+            const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+            const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+            const confirmMessage = document.getElementById('confirmMessage');
+
+            let editingRow = null;
+            let rowToDelete = null;
+
+            // --- 1. Round Selector Logic ---
+            roundSelector.addEventListener('change', (event) => {
+                const selectedRound = event.target.options[event.target.selectedIndex].text;
+                mainTitle.textContent = 'Segments for ' + selectedRound;
+            });
+
+            // --- 2. Criteria Helper Functions ---
+            const addCriteriaItem = (data = null) => {
+                // Clone the template
+                const newCriteria = criteriaTemplate.firstElementChild.cloneNode(true);
+                
+                // If data exists (Edit mode), populate fields
+                if (data) {
+                    newCriteria.querySelector('.criteria-name').value = data.name;
+                    newCriteria.querySelector('.criteria-points').value = data.points;
+                    newCriteria.querySelector('.criteria-description').value = data.desc;
+                }
+
+                criteriaList.appendChild(newCriteria);
+            };
+
+            // Add Criteria Button Click
+            addCriteriaBtn.addEventListener('click', () => addCriteriaItem());
+
+            // Remove Criteria Button Click (Event Delegation)
+            criteriaList.addEventListener('click', (event) => {
+                if (event.target.classList.contains('remove-criteria-btn')) {
+                    event.target.closest('.criteria-item').remove();
+                }
+            });
+
+            // --- 3. Open Modal (Create) ---
+            const openModal = (isEdit = false) => {
+                modal.style.display = 'flex';
+                if (!isEdit) {
+                    form.reset();
+                    editingRow = null;
+                    modalTitle.textContent = "Add New Segment";
+                    submitBtn.textContent = "Save Segment";
+                    criteriaList.innerHTML = ''; // Clear existing list
+                    addCriteriaItem(); // Add one empty row by default
+                } else {
+                    modalTitle.textContent = "Edit Segment";
+                    submitBtn.textContent = "Update Segment";
+                }
+            };
+
+            // --- 4. Close Modal ---
+            const closeModal = () => {
+                modal.style.display = 'none';
+                form.reset();
+                editingRow = null;
+            }
+            
+            addBtn.addEventListener('click', () => openModal(false));
+            closeBtn.addEventListener('click', closeModal);
+            
+            window.addEventListener('click', (e) => { 
+                if (e.target === modal) closeModal();
+                if (e.target === confirmModal) confirmModal.style.display = 'none';
+            });
+
+            // --- 5. Handle Form Submit (Create / Update) ---
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Get Basic Values
+                const name = nameInput.value;
+                const weight = weightInput.value + '%'; // Append % for display
+                const desc = descInput.value;
+
+                // Get Criteria Values
+                const criteriaItems = [];
+                let totalPoints = 0;
+                
+                document.querySelectorAll('#criteriaList .criteria-item').forEach(item => {
+                    const cName = item.querySelector('.criteria-name').value;
+                    const cPoints = item.querySelector('.criteria-points').value;
+                    const cDesc = item.querySelector('.criteria-description').value;
+                    
+                    if (cName && cPoints) {
+                        totalPoints += parseInt(cPoints);
+                        criteriaItems.push({
+                            name: cName,
+                            points: cPoints,
+                            desc: cDesc
+                        });
+                    }
+                });
+
+                // Construct Summary String
+                const count = criteriaItems.length;
+                const summary = `${count} criteria (${totalPoints}pts total)`;
+
+                // JSON Stringify for storage
+                const criteriaJson = JSON.stringify(criteriaItems);
+
+                if (editingRow) {
+                    // === UPDATE ===
+                    editingRow.querySelector('.col-name').textContent = name;
+                    editingRow.querySelector('.col-weight').textContent = weight;
+                    editingRow.querySelector('.col-summary').textContent = summary;
+                    
+                    // Update Attributes
+                    editingRow.setAttribute('data-desc', desc);
+                    editingRow.setAttribute('data-criteria', criteriaJson);
+                    
+                    console.log("Segment Updated!");
+                } else {
+                    // === CREATE ===
+                    const newRow = document.createElement('tr');
+                    newRow.setAttribute('data-desc', desc);
+                    newRow.setAttribute('data-criteria', criteriaJson);
+                    
+                    newRow.innerHTML = `
+                        <td class="col-name" data-label="Segment Name">${name}</td>
+                        <td class="col-weight" data-label="Weight (%)">${weight}</td>
+                        <td class="col-summary" data-label="Criteria (Summary)">${summary}</td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <button class="btn-action edit-btn">Edit</button>
+                                <button class="btn-action btn-action-danger delete-btn">Deactivate</button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(newRow);
+                }
+                closeModal();
+            });
+
+            // --- 6. Handle Table Actions (Edit / Deactivate) ---
+            tableBody.addEventListener('click', (e) => {
+                const target = e.target;
+                const row = target.closest('tr');
+
+                if (!row) return;
+
+                // DEACTIVATE (Using Custom Confirm)
+                if (target.classList.contains('delete-btn')) {
+                    rowToDelete = row;
+                    confirmMessage.innerHTML = `Are you sure you want to deactivate the segment: <strong>${row.querySelector('.col-name').textContent}</strong>?`;
+                    confirmModal.style.display = 'flex';
+                }
+
+                // EDIT
+                if (target.classList.contains('edit-btn')) {
+                    editingRow = row;
+
+                    // Get Data
+                    const name = row.querySelector('.col-name').textContent;
+                    let weight = row.querySelector('.col-weight').textContent;
+                    const desc = row.getAttribute('data-desc');
+                    const criteriaJson = row.getAttribute('data-criteria');
+
+                    // Populate Basic Form
+                    nameInput.value = name;
+                    weightInput.value = weight.replace('%', ''); // Remove % for number input
+                    descInput.value = desc;
+
+                    // Populate Criteria List
+                    criteriaList.innerHTML = '';
+                    if (criteriaJson) {
+                        const criteriaData = JSON.parse(criteriaJson);
+                        criteriaData.forEach(item => addCriteriaItem(item));
+                    } else {
+                        addCriteriaItem();
+                    }
+
+                    openModal(true);
+                }
+            });
+
+            // --- 7. Confirmation Modal Logic ---
+            deleteConfirmBtn.addEventListener('click', () => {
+                if (rowToDelete) {
+                    rowToDelete.remove();
+                    rowToDelete = null;
+                    console.log("Segment Deactivated.");
+                }
+                confirmModal.style.display = 'none';
+            });
+
+            cancelConfirmBtn.addEventListener('click', () => {
+                rowToDelete = null;
+                confirmModal.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+>>>>>>> 76b4a9b (Initial commit)
 </html>

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -436,4 +437,444 @@
         }
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrownFlow | Pageant Management System</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+    <!-- Custom Styles for Specific Pageant Elements -->
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+        }
+        h1, h2, h3, h4, .brand-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .gold-gradient {
+            background: linear-gradient(135deg, #BF953F, #FCF6BA, #B38728, #FBF5B7, #AA771C);
+        }
+        .gold-text {
+            background: linear-gradient(to right, #BF953F, #FCF6BA, #B38728);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hero-bg {
+            background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        .hidden-section {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .visible-section {
+            display: block;
+            animation: fadeIn 0.5s forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Card Hover Effects */
+        .candidate-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 overflow-x-hidden">
+
+    <!-- NAVIGATION BAR -->
+    <nav class="fixed w-full z-50 bg-white shadow-md transition-all duration-300" id="navbar">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex items-center gap-2 cursor-pointer" onclick="navigateTo('home')">
+                <i class="fa-solid fa-crown text-amber-500 text-2xl"></i>
+                <span class="text-2xl font-bold brand-font text-slate-900">Crown<span class="text-amber-500">Flow</span></span>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8 items-center">
+                <button onclick="navigateTo('home')" class="text-slate-600 hover:text-amber-600 font-medium transition">Home</button>
+                <button onclick="scrollToSection('contestants')" class="text-slate-600 hover:text-amber-600 font-medium transition">Contestants</button>
+                <button onclick="scrollToSection('activities')" class="text-slate-600 hover:text-amber-600 font-medium transition">Activities</button>
+                <button onclick="scrollToSection('results')" class="text-slate-600 hover:text-amber-600 font-medium transition">Results</button>
+                <button onclick="navigateTo('login')" class="bg-slate-900 text-white px-6 py-2 rounded-full hover:bg-slate-800 transition shadow-lg transform hover:scale-105">
+                    <i class="fa-solid fa-lock mr-2 text-xs"></i> Login
+                </button>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-slate-800 text-2xl" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white w-full border-t absolute">
+            <div class="flex flex-col p-4 space-y-4">
+                <button onclick="navigateTo('home')" class="text-left text-slate-600">Home</button>
+                <button onclick="scrollToSection('contestants')" class="text-left text-slate-600">Contestants</button>
+                <button onclick="navigateTo('login')" class="text-left text-amber-600 font-bold">Admin Login</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <div id="main-container" class="pt-0">
+
+        <!-- PAGE: HOME -->
+        <div id="home-page" class="visible-section">
+            
+            <!-- Hero Section -->
+            <header class="hero-bg h-screen flex items-center justify-center text-center px-4 relative">
+                <div class="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-slate-50"></div>
+                <div class="relative z-10 max-w-4xl">
+                    <div class="mb-4 animate-pulse">
+                        <span class="bg-amber-500 text-white px-4 py-1 rounded-full text-sm uppercase tracking-widest font-bold">Miss University 2025</span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-bold text-white mb-6 drop-shadow-lg">
+                        Beauty with a <br/><span class="text-amber-400">Purpose</span>
+                    </h1>
+                    <p class="text-lg md:text-xl text-gray-200 mb-10 font-light max-w-2xl mx-auto">
+                        Witness the journey of elegance, intelligence, and grace as we crown the next ambassador of goodwill.
+                    </p>
+                    <div class="flex flex-col md:flex-row gap-4 justify-center">
+                        <button onclick="scrollToSection('contestants')" class="bg-amber-500 text-white px-8 py-4 rounded-full font-bold hover:bg-amber-600 transition shadow-lg hover:shadow-amber-500/50">
+                            View Contestants
+                        </button>
+                        <button onclick="scrollToSection('results')" class="bg-white/10 backdrop-blur-md border border-white/30 text-white px-8 py-4 rounded-full font-bold hover:bg-white hover:text-slate-900 transition">
+                            See Live Results
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Section: Contestants -->
+            <section id="contestants" class="py-20 container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl font-bold text-slate-900 mb-4">The Candidates</h2>
+                    <div class="w-24 h-1 bg-amber-500 mx-auto"></div>
+                    <p class="text-gray-600 mt-4">Meet the lovely ladies vying for the crown.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" id="candidates-grid">
+                    <!-- Candidates injected via JS -->
+                </div>
+            </section>
+
+            <!-- Section: Activities/Timeline -->
+            <section id="activities" class="py-20 bg-slate-900 text-white">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-16">
+                        <h2 class="text-4xl font-bold text-amber-400 mb-4">Event Schedule</h2>
+                        <p class="text-gray-400">Follow the journey to the crown.</p>
+                    </div>
+
+                    <div class="max-w-4xl mx-auto relative border-l-2 border-amber-500/30 ml-4 md:ml-auto">
+                        
+                        <!-- Event 1 -->
+                        <div class="mb-12 pl-8 relative">
+                            <div class="absolute -left-2.5 top-1 w-5 h-5 rounded-full bg-amber-500 ring-4 ring-slate-900"></div>
+                            <div class="bg-white/5 p-6 rounded-lg border border-white/10 hover:border-amber-500/50 transition">
+                                <span class="text-amber-400 text-sm font-bold uppercase tracking-wide">Completed • Oct 15</span>
+                                <h3 class="text-2xl font-bold mt-2">Press Presentation</h3>
+                                <p class="text-gray-400 mt-2">The official sash ceremony and introduction of candidates to the media.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 2 -->
+                        <div class="mb-12 pl-8 relative">
+                            <div class="absolute -left-2.5 top-1 w-5 h-5 rounded-full bg-amber-500 ring-4 ring-slate-900"></div>
+                            <div class="bg-white/5 p-6 rounded-lg border border-white/10 hover:border-amber-500/50 transition">
+                                <span class="text-amber-400 text-sm font-bold uppercase tracking-wide">Completed • Oct 22</span>
+                                <h3 class="text-2xl font-bold mt-2">Talent Night</h3>
+                                <p class="text-gray-400 mt-2">A showcase of diverse skills ranging from traditional dance to modern vocal performances.</p>
+                            </div>
+                        </div>
+
+                        <!-- Event 3 -->
+                        <div class="mb-12 pl-8 relative">
+                            <div class="absolute -left-2.5 top-1 w-5 h-5 rounded-full bg-white ring-4 ring-slate-900 animate-pulse"></div>
+                            <div class="bg-gradient-to-r from-amber-900/40 to-transparent p-6 rounded-lg border border-amber-500/50">
+                                <span class="text-white text-sm font-bold uppercase tracking-wide bg-amber-600 px-2 py-1 rounded">Upcoming • Nov 05</span>
+                                <h3 class="text-2xl font-bold mt-2 text-amber-200">Grand Coronation Night</h3>
+                                <p class="text-gray-300 mt-2">The final verdict. Evening Gown competition, Q&A, and the Crowning moment.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Results -->
+            <section id="results" class="py-20 bg-slate-50">
+                <div class="container mx-auto px-6">
+                    <div class="text-center mb-12">
+                        <h2 class="text-4xl font-bold text-slate-900">Preliminary Results</h2>
+                        <p class="text-gray-600 mt-2">Current standings based on Talent and Swimsuit rounds.</p>
+                    </div>
+
+                    <div class="max-w-5xl mx-auto bg-white shadow-2xl rounded-2xl overflow-hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-3">
+                            
+                            <!-- 2nd Place -->
+                            <div class="p-8 border-b md:border-b-0 md:border-r border-gray-100 flex flex-col items-center justify-center bg-gray-50 order-2 md:order-1">
+                                <div class="w-12 h-12 bg-gray-300 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4 shadow">2</div>
+                                <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="w-24 h-24 rounded-full object-cover border-4 border-gray-300 mb-4" alt="Candidate">
+                                <h3 class="font-bold text-lg">Maria Santos</h3>
+                                <p class="text-sm text-gray-500 uppercase tracking-wide">1st Runner Up</p>
+                                <p class="mt-4 text-xl font-bold text-gray-700">89.5 pts</p>
+                            </div>
+
+                            <!-- Winner -->
+                            <div class="p-10 relative flex flex-col items-center justify-center bg-white order-1 md:order-2 transform md:scale-110 shadow-lg z-10">
+                                <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-amber-300 via-amber-500 to-amber-300"></div>
+                                <i class="fa-solid fa-crown text-4xl text-amber-500 mb-4 animate-bounce"></i>
+                                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="w-32 h-32 rounded-full object-cover border-4 border-amber-400 mb-4 shadow-xl" alt="Candidate">
+                                <h3 class="font-bold text-2xl brand-font">Sarah Jenkins</h3>
+                                <p class="text-sm text-amber-600 font-bold uppercase tracking-wide">Leading Candidate</p>
+                                <p class="mt-4 text-3xl font-bold text-slate-900">92.4 pts</p>
+                            </div>
+
+                            <!-- 3rd Place -->
+                            <div class="p-8 flex flex-col items-center justify-center bg-gray-50 order-3">
+                                <div class="w-12 h-12 bg-amber-700 rounded-full flex items-center justify-center text-white font-bold text-xl mb-4 shadow">3</div>
+                                <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" class="w-24 h-24 rounded-full object-cover border-4 border-amber-700 mb-4" alt="Candidate">
+                                <h3 class="font-bold text-lg">Elena Cruz</h3>
+                                <p class="text-sm text-gray-500 uppercase tracking-wide">2nd Runner Up</p>
+                                <p class="mt-4 text-xl font-bold text-gray-700">88.2 pts</p>
+                            </div>
+
+                        </div>
+                        <div class="bg-slate-900 text-white p-4 text-center text-sm">
+                            * Scores updated live from judges tabulation system.
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Footer -->
+            <footer class="bg-slate-900 text-white py-8 border-t border-slate-800">
+                <div class="container mx-auto px-6 flex flex-col md:flex-row justify-between items-center">
+                    <div class="mb-4 md:mb-0">
+                        <span class="brand-font text-xl font-bold">CrownFlow System</span>
+                        <p class="text-slate-500 text-sm">© 2025 All Rights Reserved.</p>
+                    </div>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-slate-400 hover:text-white"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-white"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-white"><i class="fa-brands fa-twitter"></i></a>
+                    </div>
+                </div>
+            </footer>
+
+        </div> <!-- End Home Page -->
+
+
+        <!-- PAGE: LOGIN -->
+        <div id="login-page" class="hidden-section h-screen bg-slate-100 flex items-center justify-center relative overflow-hidden">
+            <!-- Background Decor -->
+            <div class="absolute top-0 left-0 w-full h-full bg-cover bg-center opacity-10" style="background-image: url('https://images.unsplash.com/photo-1470229722913-7ea3510133ca?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');"></div>
+            
+            <div class="relative w-full max-w-md px-6">
+                <div class="bg-white rounded-2xl shadow-2xl overflow-hidden border border-gray-100">
+                    <div class="p-8 text-center bg-slate-900 text-white relative overflow-hidden">
+                         <div class="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-amber-500/20 to-purple-500/20"></div>
+                        <i class="fa-solid fa-crown text-4xl text-amber-400 mb-3 relative z-10"></i>
+                        <h2 class="text-2xl font-bold brand-font relative z-10">Admin Portal</h2>
+                        <p class="text-slate-400 text-sm relative z-10">Enter your credentials to manage the event.</p>
+                    </div>
+
+                    <form class="p-8 space-y-6" onsubmit="handleLogin(event)">
+                        <!-- Username -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-gray-600 tracking-wide">Username</label>
+                            <div class="flex items-center border border-gray-300 rounded-lg px-3 py-2 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500 transition">
+                                <i class="fa-regular fa-user text-gray-400 mr-3"></i>
+                                <input type="text" id="username" class="w-full outline-none text-gray-700" placeholder="admin" required>
+                            </div>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="space-y-2">
+                            <label class="text-sm font-bold text-gray-600 tracking-wide">Password</label>
+                            <div class="flex items-center border border-gray-300 rounded-lg px-3 py-2 focus-within:border-amber-500 focus-within:ring-1 focus-within:ring-amber-500 transition">
+                                <i class="fa-solid fa-key text-gray-400 mr-3"></i>
+                                <input type="password" id="password" class="w-full outline-none text-gray-700" placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between text-sm">
+                            <label class="flex items-center text-gray-500 cursor-pointer">
+                                <input type="checkbox" class="mr-2 accent-amber-500"> Remember me
+                            </label>
+                            <a href="/MANAGE-ORGANIZER/organizer.html" class="text-amber-600 hover:underline font-medium">Forgot password?</a>
+                        </div>
+
+                        <button type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-lg hover:bg-amber-600 transition shadow-lg flex justify-center items-center gap-2">
+                            <span>Sign In</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </form>
+
+                    <div class="px-8 py-4 bg-gray-50 border-t border-gray-100 text-center">
+                        <p class="text-xs text-gray-500">Return to <a href="/MANAGE-ORGANIZER/organizer.html" onclick="navigateTo('/MANAGE-ORGANIZER')" class="text-amber-600 font-bold hover:underline">Public Site</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // --- DATA SIMULATION ---
+        const candidates = [
+            { id: 1, name: "Sarah Jenkins", dept: "College of Science", img: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+            { id: 2, name: "Maria Santos", dept: "College of Arts", img: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+            { id: 3, name: "Elena Cruz", dept: "College of Nursing", img: "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+            { id: 4, name: "Jasmine Lee", dept: "College of Engineering", img: "https://images.unsplash.com/photo-1517841905240-472988babdf9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+            { id: 5, name: "Rochelle O", dept: "Business School", img: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+            { id: 6, name: "Anna Fry", dept: "College of Education", img: "https://images.unsplash.com/photo-1488426862026-3ee34a7d66df?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+            { id: 7, name: "Bea Alonzo", dept: "College of Law", img: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" },
+            { id: 8, name: "Kate Wins", dept: "Architecture", img: "https://images.unsplash.com/photo-1524504388940-b1c1722653e1?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" }
+        ];
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCandidates();
+        });
+
+        // --- RENDER FUNCTIONS ---
+        function renderCandidates() {
+            const container = document.getElementById('candidates-grid');
+            container.innerHTML = candidates.map(c => `
+                <div class="bg-white rounded-xl shadow-sm hover:shadow-xl overflow-hidden candidate-card border border-gray-100 cursor-pointer">
+                    <div class="relative h-64 overflow-hidden">
+                        <img src="${c.img}" class="w-full h-full object-cover transition transform hover:scale-110 duration-500" alt="${c.name}">
+                        <div class="absolute bottom-0 left-0 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-tr-lg">
+                            Candidate #${c.id}
+                        </div>
+                    </div>
+                    <div class="p-6 text-center">
+                        <h3 class="text-xl font-bold text-slate-900 brand-font">${c.name}</h3>
+                        <p class="text-sm text-gray-500 mt-1 uppercase tracking-wide">${c.dept}</p>
+                        <div class="mt-4 flex justify-center gap-2">
+                            <button class="text-xs bg-slate-100 hover:bg-amber-100 text-slate-600 px-3 py-1 rounded-full transition">
+                                <i class="fa-regular fa-heart mr-1"></i> Vote
+                            </button>
+                            <button class="text-xs bg-slate-100 hover:bg-slate-200 text-slate-600 px-3 py-1 rounded-full transition">
+                                View Profile
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // --- NAVIGATION LOGIC ---
+        function navigateTo(page) {
+            const home = document.getElementById('home-page');
+            const login = document.getElementById('login-page');
+            const navbar = document.getElementById('navbar');
+
+            // Helper to switch visibility
+            const switchView = (show, hide) => {
+                hide.classList.remove('visible-section');
+                hide.classList.add('hidden-section');
+                
+                // Small timeout to allow DOM to update before fading in
+                setTimeout(() => {
+                    show.classList.remove('hidden-section');
+                    show.classList.add('visible-section');
+                }, 50);
+            };
+
+            if (page === 'login') {
+                switchView(login, home);
+                navbar.classList.add('hidden'); // Hide navbar on login page
+                window.scrollTo(0, 0);
+            } else {
+                switchView(home, login);
+                navbar.classList.remove('hidden'); // Show navbar on home
+                window.scrollTo(0, 0);
+            }
+            
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function scrollToSection(sectionId) {
+            // Ensure we are on home page first
+            const home = document.getElementById('home-page');
+            const login = document.getElementById('login-page');
+            
+            if (login.classList.contains('visible-section')) {
+                navigateTo('home');
+                // Wait for transition then scroll
+                setTimeout(() => {
+                    const el = document.getElementById(sectionId);
+                    if(el) el.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            } else {
+                const el = document.getElementById(sectionId);
+                if(el) el.scrollIntoView({ behavior: 'smooth' });
+            }
+            
+            document.getElementById('mobile-menu').classList.add('hidden');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        // --- AUTH SIMULATION ---
+        function handleLogin(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const originalContent = btn.innerHTML;
+
+            // Loading state
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Authenticating...';
+
+            setTimeout(() => {
+                // Simulate "Success" and redirect back to home as "Logged In" (Mock)
+                alert("Login Successful! Welcome, Admin.");
+                
+                // Reset button
+                btn.innerHTML = originalContent;
+                btn.disabled = false;
+                
+                // For this demo, we just go back to home
+                window.location.href = '/MANAGE-ORGANIZER/organizer.html';
+            }, 1500);
+        }
+    </script>
+</body>
+>>>>>>> 76b4a9b (Initial commit)
 </html>
