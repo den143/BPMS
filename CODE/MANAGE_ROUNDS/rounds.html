@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rounds Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Consolidated Styling -->
+    <style>
+        /* Base Styles (Inter font) */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f4f4f9; 
+            margin: 0;
+        }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sidebar-title {
+            font-size: 1.5rem;
+            color: #2196f3;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-nav li a {
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .sidebar-nav li a:hover, .sidebar-nav li a.active {
+            background-color: #e3f2fd;
+            color: #2196f3;
+            font-weight: 600;
+        }
+        .sidebar-footer a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            padding: 20px 40px;
+        }
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .main-title {
+            font-size: 2rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Table Styling */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+        }
+        .data-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        .data-table th, .data-table td { 
+            padding: 15px 20px; 
+            border-bottom: 1px solid #f0f0f0; 
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .data-table th {
+            background-color: #f7f9fc;
+            font-weight: 600;
+            color: #555;
+        }
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Status Badges */
+        .status-badge { 
+            padding: 4px 10px; 
+            border-radius: 16px; 
+            font-size: 0.75rem; 
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-enabled { 
+            background: #e8f5e9; 
+            color: #2e7d32; 
+        }
+        .status-disabled { 
+            background: #f5f5f5; 
+            color: #616161; 
+        }
+
+        /* Buttons and Actions */
+        .btn { 
+            padding: 10px 20px; 
+            cursor: pointer; 
+            border: none; 
+            border-radius: 6px; 
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .btn-primary { 
+            background: #2196f3; 
+            color: white; 
+        }
+        .btn-primary:hover {
+            background: #1e88e5;
+        }
+        .btn-action { 
+            padding: 6px 12px; 
+            margin-right: 5px; 
+            cursor: pointer; 
+            background: #f0f0f0; 
+            color: #333; 
+            border: 1px solid #ddd; 
+            border-radius: 4px;
+            font-size: 0.85rem;
+        }
+        .btn-action:hover {
+            background: #e0e0e0;
+        }
+        .btn-action-danger { 
+            background-color: #ffebee; 
+            color: #c62828; 
+            border: 1px solid #ef9a9a; 
+        }
+        .btn-action-danger:hover {
+            background-color: #ffcdd2; 
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
+        /* Modal Overlays (For Create/Edit and Custom Confirm) */
+        .modal-overlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+            padding: 20px;
+        }
+        .modal-content { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            width: 450px; 
+            max-width: 95%; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-content.confirm {
+            width: 350px;
+            padding: 25px;
+        }
+        .modal-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 25px; 
+        }
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.75rem;
+            color: #333;
+        }
+        .close-button { 
+            border:none; 
+            background:none; 
+            font-size:2rem; 
+            cursor:pointer; 
+            color: #999;
+            transition: color 0.2s;
+        }
+        .close-button:hover {
+            color: #333;
+        }
+        
+        /* Form Styling */
+        .form-group { 
+            margin-bottom: 20px; 
+        }
+        .form-group label { 
+            display: block; 
+            margin-bottom: 8px; 
+            font-weight: 500; 
+            color: #555;
+        }
+        .form-group input, .form-group select { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ddd; 
+            border-radius: 6px; 
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #2196f3;
+            outline: none;
+        }
+        .form-group-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .form-actions {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            .main-content {
+                padding: 20px;
+            }
+            .data-table thead {
+                display: none; /* Hide header on mobile */
+            }
+            .data-table tr {
+                display: block;
+                margin-bottom: 10px;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+            }
+            .data-table td {
+                display: block;
+                text-align: right;
+                padding: 10px 15px;
+                position: relative;
+                border-bottom: 1px solid #eee;
+            }
+            .data-table td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                font-weight: 600;
+                color: #555;
+            }
+            .action-buttons {
+                justify-content: flex-end;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Confirmation Modal (Custom Alert/Confirm) -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content confirm">
+            <p id="confirmMessage" style="margin-bottom: 25px; font-weight: 500; font-size: 1.1rem; color: #333;">Are you sure you want to proceed?</p>
+            <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                <button id="cancelConfirmBtn" class="btn" style="background: #e0e0e0; color: #333; font-weight: 500;">No</button>
+                <button id="deleteConfirmBtn" class="btn btn-action-danger">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Round Modal -->
+    <div id="roundModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Create New Round</h2>
+                <button id="closeModalBtn" class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Added ID to form -->
+                <form class="modal-form" id="roundForm">
+                    <div class="form-group">
+                        <label for="roundName">Round Name</label>
+                        <input type="text" id="roundName" placeholder="e.g., Preliminaries" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="roundOrder">Order</label>
+                        <input type="number" id="roundOrder" placeholder="1" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="advancementRule">Advancement Rule</label>
+                        <select id="advancementRule">
+                            <option value="top_x">Advance Top X</option>
+                            <option value="all">Advance All</option>
+                            <option value="final">Final Round</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="topXContainer">
+                        <label for="topXValue">Number to Advance</label>
+                        <input type="number" id="topXValue" placeholder="e.g., 20" min="1">
+                    </div>
+                    <div class="form-group-checkbox">
+                        <input type="checkbox" id="enableAudienceVoting">
+                        <label for="enableAudienceVoting">Enable Audience Voting</label>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Save Round</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div>
+                <h1 class="sidebar-title">Event Manager</h1>
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/MANAGE-ORGANIZER/organizer.html" type="button" onclick="index.html">Manage Organizers</a></li>
+                        <li><a href="/MAANGE_ACTIVITY/activities.html" type="button" onclick="activities.html">Manage Activities</a></li>
+                        <li><a href="#" class="active">Manage Rounds</a></li>
+                        <li><a href="/MANAGE_SEGMENTS/segments.html" type="button" onclick="segments.html">Manage Segments</a></li>
+                        <li><a href="/MANAGE_AWARDS/awards.html" type="button" onclick="awards.html">Manage Awards</a></li>
+                        <li><a href="/REGISTER_CONTESTANT/contestant.html" type="button" onclick="contestant.html">Register Contestant</a></li>
+                        <li><a href="/REGISTER_JUDGE/judge.html" type="button" onclick="judge.html">Register Judge</a></li>
+                        <li><a href="/RESULT_PANEL/result.html" type="button" onclick="result.html">Result Panel</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+               <a href="#">Settings</a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <div class="main-header">
+                    <h2 class="main-title">Manage Rounds</h2>
+                    <button id="addRoundBtn" class="btn btn-primary">Add Round</button>
+                </div>
+                
+                <!-- Rounds Table Card -->
+                <div class="card table-card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Order</th>
+                                <th>Round Name</th>
+                                <th>Advancement Rule</th>
+                                <th>Audience Voting</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <!-- Added ID to TBODY -->
+                        <tbody id="roundTableBody">
+                            <!-- Static Row 1 -->
+                            <tr data-rule-type="top_x" data-rule-val="20" data-voting="true">
+                                <td class="col-order" data-label="Order">1</td>
+                                <td class="col-name" data-label="Round Name">Preliminaries</td>
+                                <td class="col-rule" data-label="Advancement Rule">Advance Top 20</td>
+                                <td class="col-voting" data-label="Audience Voting"><span class="status-badge status-enabled">Enabled</span></td>
+                                <td data-label="Actions">
+                                    <div class="action-buttons">
+                                        <button class="btn-action edit-btn">Edit</button>
+                                        <button class="btn-action btn-action-danger delete-btn">Deactivate</button>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- Static Row 2 -->
+                            <tr data-rule-type="top_x" data-rule-val="10" data-voting="false">
+                                <td class="col-order" data-label="Order">2</td>
+                                <td class="col-name" data-label="Round Name">Semifinals</td>
+                                <td class="col-rule" data-label="Advancement Rule">Advance Top 10</td>
+                                <td class="col-voting" data-label="Audience Voting"><span class="status-badge status-disabled">Disabled</span></td>
+                                <td data-label="Actions">
+                                    <div class="action-buttons">
+                                        <button class="btn-action edit-btn">Edit</button>
+                                        <button class="btn-action btn-action-danger delete-btn">Deactivate</button>
+                                    </div>
+                                </td>
+                            </tr>
+                             <!-- Static Row 3 -->
+                             <tr data-rule-type="final" data-rule-val="" data-voting="false">
+                                <td class="col-order" data-label="Order">3</td>
+                                <td class="col-name" data-label="Round Name">Finals</td>
+                                <td class="col-rule" data-label="Advancement Rule">Final Round</td>
+                                <td class="col-voting" data-label="Audience Voting"><span class="status-badge status-disabled">Disabled</span></td>
+                                <td data-label="Actions">
+                                    <div class="action-buttons">
+                                        <button class="btn-action edit-btn">Edit</button>
+                                        <button class="btn-action btn-action-danger delete-btn">Deactivate</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Elements
+            const modal = document.getElementById('roundModal');
+            const addBtn = document.getElementById('addRoundBtn');
+            const closeBtn = document.getElementById('closeModalBtn');
+            const form = document.getElementById('roundForm');
+            const tableBody = document.getElementById('roundTableBody');
+            const modalTitle = document.getElementById('modalTitle');
+            const submitBtn = document.getElementById('submitBtn');
+
+            // Form Inputs
+            const roundNameInput = document.getElementById('roundName');
+            const roundOrderInput = document.getElementById('roundOrder');
+            const advancementRuleSelect = document.getElementById('advancementRule');
+            const topXContainer = document.getElementById('topXContainer');
+            const topXValueInput = document.getElementById('topXValue');
+            const votingCheckbox = document.getElementById('enableAudienceVoting');
+
+            // Confirmation Modal Elements
+            const confirmModal = document.getElementById('confirmModal');
+            const deleteConfirmBtn = document.getElementById('deleteConfirmBtn');
+            const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+            const confirmMessage = document.getElementById('confirmMessage');
+
+            // State
+            let editingRow = null;
+            let rowToDelete = null;
+
+            // --- 1. Logic: Toggle "Top X" Input ---
+            const toggleTopXInput = () => {
+                if (advancementRuleSelect.value === 'top_x') {
+                    topXContainer.style.display = 'block';
+                    topXValueInput.setAttribute('required', 'true');
+                } else {
+                    topXContainer.style.display = 'none';
+                    topXValueInput.removeAttribute('required');
+                    topXValueInput.value = ''; // Clear value if hidden
+                }
+            };
+
+            advancementRuleSelect.addEventListener('change', toggleTopXInput);
+
+            // --- 2. Modal Logic ---
+            const openModal = (isEdit = false) => {
+                modal.style.display = 'flex';
+                if (!isEdit) {
+                    form.reset();
+                    editingRow = null;
+                    modalTitle.textContent = 'Create New Round';
+                    submitBtn.textContent = 'Save Round';
+                    advancementRuleSelect.value = 'top_x'; // Default
+                    toggleTopXInput();
+                } else {
+                    modalTitle.textContent = 'Edit Round';
+                    submitBtn.textContent = 'Update Round';
+                }
+            };
+
+            const closeModal = () => {
+                modal.style.display = 'none';
+                form.reset();
+                editingRow = null;
+            }
+
+            addBtn.addEventListener('click', () => openModal(false));
+            closeBtn.addEventListener('click', closeModal);
+            
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) closeModal();
+                if (event.target === confirmModal) confirmModal.style.display = 'none';
+            });
+
+            // --- 3. Handle Form Submission (Create / Update) ---
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // Get Values
+                const name = roundNameInput.value;
+                const order = roundOrderInput.value;
+                const ruleType = advancementRuleSelect.value;
+                const ruleVal = topXValueInput.value; // Only matters if top_x
+                const isVotingEnabled = votingCheckbox.checked;
+
+                // Determine Display Text for Rule
+                let displayRule = "";
+                if (ruleType === 'top_x') {
+                    displayRule = `Advance Top ${ruleVal}`;
+                } else if (ruleType === 'all') {
+                    displayRule = "Advance All";
+                } else if (ruleType === 'final') {
+                    displayRule = "Final Round";
+                }
+
+                // Determine Display HTML for Voting
+                const displayVoting = isVotingEnabled 
+                    ? '<span class="status-badge status-enabled">Enabled</span>' 
+                    : '<span class="status-badge status-disabled">Disabled</span>';
+
+                if (editingRow) {
+                    // === UPDATE EXISTING ROW ===
+                    editingRow.querySelector('.col-order').textContent = order;
+                    editingRow.querySelector('.col-name').textContent = name;
+                    editingRow.querySelector('.col-rule').textContent = displayRule;
+                    editingRow.querySelector('.col-voting').innerHTML = displayVoting;
+
+                    // Update Data Attributes
+                    editingRow.setAttribute('data-rule-type', ruleType);
+                    editingRow.setAttribute('data-rule-val', ruleVal);
+                    editingRow.setAttribute('data-voting', isVotingEnabled);
+
+                    console.log("Round Updated Successfully!");
+                } else {
+                    // === CREATE NEW ROW ===
+                    const newRow = document.createElement('tr');
+                    
+                    // Set Data Attributes
+                    newRow.setAttribute('data-rule-type', ruleType);
+                    newRow.setAttribute('data-rule-val', ruleVal);
+                    newRow.setAttribute('data-voting', isVotingEnabled);
+
+                    newRow.innerHTML = `
+                        <td class="col-order" data-label="Order">${order}</td>
+                        <td class="col-name" data-label="Round Name">${name}</td>
+                        <td class="col-rule" data-label="Advancement Rule">${displayRule}</td>
+                        <td class="col-voting" data-label="Audience Voting">${displayVoting}</td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <button class="btn-action edit-btn">Edit</button>
+                                <button class="btn-action btn-action-danger delete-btn">Deactivate</button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(newRow);
+                }
+                closeModal();
+            });
+
+            // --- 4. Handle Table Actions (Edit / Deactivate) ---
+            tableBody.addEventListener('click', (e) => {
+                const target = e.target;
+                const row = target.closest('tr');
+
+                if (!row) return;
+
+                // DELETE Action
+                if (target.classList.contains('delete-btn')) {
+                    rowToDelete = row;
+                    confirmMessage.innerHTML = `Are you sure you want to deactivate the round: <strong>${row.querySelector('.col-name').textContent}</strong>?`;
+                    confirmModal.style.display = 'flex';
+                }
+
+                // EDIT Action
+                if (target.classList.contains('edit-btn')) {
+                    editingRow = row;
+
+                    // Get Data from Row Attributes & Text
+                    const order = row.querySelector('.col-order').textContent;
+                    const name = row.querySelector('.col-name').textContent;
+                    const ruleType = row.getAttribute('data-rule-type');
+                    const ruleVal = row.getAttribute('data-rule-val');
+                    const votingStr = row.getAttribute('data-voting'); // "true" or "false"
+
+                    // Populate Form
+                    roundNameInput.value = name;
+                    roundOrderInput.value = order;
+                    advancementRuleSelect.value = ruleType;
+                    topXValueInput.value = ruleVal;
+                    votingCheckbox.checked = (votingStr === 'true');
+
+                    // Ensure proper UI state for dropdown input
+                    toggleTopXInput();
+                    openModal(true);
+                }
+            });
+
+            // --- 5. Confirmation Modal Logic ---
+            deleteConfirmBtn.addEventListener('click', () => {
+                if (rowToDelete) {
+                    rowToDelete.remove();
+                    rowToDelete = null;
+                }
+                confirmModal.style.display = 'none';
+            });
+
+            cancelConfirmBtn.addEventListener('click', () => {
+                rowToDelete = null;
+                confirmModal.style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

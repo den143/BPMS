@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contestant Manager</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Consolidated Styling -->
+    <style>
+        /* Base Styles */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f4f4f9; 
+            margin: 0;
+        }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sidebar-title {
+            font-size: 1.5rem;
+            color: #2196f3;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-nav li a {
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .sidebar-nav li a:hover, .sidebar-nav li a.active {
+            background-color: #e3f2fd;
+            color: #2196f3;
+            font-weight: 600;
+        }
+        .sidebar-footer a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            padding: 20px 40px;
+        }
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .main-title {
+            font-size: 2rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Table Styling */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .data-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        .data-table th, .data-table td { 
+            padding: 15px 20px; 
+            border-bottom: 1px solid #f0f0f0; 
+            text-align: left;
+            font-size: 0.95rem;
+        }
+        .data-table th {
+            background-color: #f7f9fc;
+            font-weight: 600;
+            color: #555;
+        }
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        .table-title {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Status Badges */
+        .status-badge { padding: 4px 10px; border-radius: 16px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .status-pending { background: #fff3e0; color: #e65100; }
+        .status-rejected { background: #ffebee; color: #c62828; }
+        .status-accepted { background: #e8f5e9; color: #2e7d32; }
+
+        /* Buttons */
+        .btn { padding: 10px 20px; cursor: pointer; border: none; border-radius: 6px; transition: all 0.2s; font-weight: 600; }
+        .btn-primary { background: #2196f3; color: white; }
+        .btn-primary:hover { background: #1e88e5; }
+        .btn-action { padding: 6px 12px; margin-right: 5px; cursor: pointer; background: #eee; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem; }
+        .btn-action:hover { background: #e0e0e0; }
+        .btn-action-success { background-color: #e8f5e9; color: #2e7d32; border: 1px solid #a5d6a7; }
+        .btn-action-success:hover { background-color: #c8e6c9; }
+        .btn-action-danger { background-color: #ffebee; color: #c62828; border: 1px solid #ef9a9a; }
+        .btn-action-danger:hover { background-color: #ffcdd2; }
+        .action-buttons { display: flex; gap: 5px; }
+
+        /* Modal Overlays */
+        .modal-overlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+            padding: 20px;
+        }
+        .modal-content { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            width: 550px; 
+            max-width: 95%; 
+            max-height: 90vh; 
+            overflow-y: auto;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-content.confirm { width: 350px; padding: 25px; height: auto; overflow-y: visible; text-align: center; }
+        
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .modal-header h2 { margin: 0; font-size: 1.75rem; color: #333; }
+        .close-button { border:none; background:none; font-size:2rem; cursor:pointer; color: #999; transition: color 0.2s; }
+        .close-button:hover { color: #333; }
+
+        /* Form Styles */
+        .form-group { margin-bottom: 20px; }
+        .form-row { display: flex; gap: 15px; }
+        .form-row .form-group { flex: 1; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
+        .form-group input, .form-group textarea { 
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; transition: border-color 0.2s;
+        }
+        .form-group input:focus, .form-group textarea:focus { border-color: #2196f3; outline: none; }
+        
+        /* File Upload */
+        .file-upload-wrapper { position: relative; overflow: hidden; display: inline-block; width: 100%; }
+        .file-input { position: absolute; left: 0; top: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+        .file-upload-label { 
+            display: block; padding: 10px; background: #f8f9fa; border: 1px dashed #ccc; text-align: center; border-radius: 6px; cursor: pointer; color: #666;
+        }
+        .form-actions { margin-top: 30px; text-align: right; }
+
+        /* Notification Banner */
+        .notification-banner { 
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%); 
+            background: #333; color: white; padding: 15px 30px; border-radius: 50px; 
+            transition: top 0.5s ease; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-weight: 500;
+        }
+        .notification-banner.show { top: 20px; }
+        .notification-banner.success { background: #43a047; }
+        .notification-banner.error { background: #e53935; }
+        .notification-banner p { margin: 0; }
+
+        /* Filters */
+        .filter-controls {
+            display: flex; justify-content: space-between; align-items: center; padding: 20px;
+        }
+        .control-group { display: flex; align-items: center; gap: 10px; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #e0e0e0; }
+            .main-content { padding: 20px; }
+            .data-table thead { display: none; }
+            .data-table tr { display: block; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; }
+            .data-table td { display: block; text-align: right; padding: 10px 15px; position: relative; border-bottom: 1px solid #eee; }
+            .data-table td::before { content: attr(data-label); position: absolute; left: 15px; font-weight: 600; color: #555; }
+            .action-buttons { justify-content: flex-end; }
+            .form-row { flex-direction: column; gap: 0; }
+            .filter-controls { flex-direction: column; gap: 15px; align-items: stretch; }
+            .control-group { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Notification Banner -->
+    <div id="notification" class="notification-banner">
+        <p id="notificationMessage"></p>
+    </div>
+
+    <!-- Confirmation Modal (Custom Alert/Confirm) -->
+    <div id="confirmModal" class="modal-overlay">
+        <div class="modal-content confirm">
+            <h3 style="margin-top: 0; color: #333;">Confirmation</h3>
+            <p id="confirmMessage" style="margin-bottom: 25px; color: #666; line-height: 1.5;">Are you sure you want to proceed?</p>
+            <div style="display: flex; justify-content: center; gap: 10px;">
+                <button id="cancelConfirmBtn" class="btn" style="background: #e0e0e0; color: #333;">Cancel</button>
+                <button id="yesConfirmBtn" class="btn btn-primary">Yes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Contestant Modal -->
+    <div id="contestantModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Add New Contestant</h2>
+                <button id="closeModalBtn" class="close-button">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Added ID to Form -->
+                <form class="modal-form" id="contestantForm">
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" placeholder="e.g., Jane Doe" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" id="age" placeholder="e.g., 24" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="height">Height (cm)</label>
+                            <input type="number" id="height" placeholder="e.g., 170">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="address">Complete Address</label>
+                        <input type="text" id="address" placeholder="123 Main St, Anytown" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact">Contact Information</label>
+                        <input type="text" id="contact" placeholder="email@example.com or 09123456789" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="biography">Biography</label>
+                        <textarea id="biography" rows="4" placeholder="Tell us about the contestant..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="contestantPhoto">Contestant Photo</label>
+                        <div class="file-upload-wrapper">
+                            <input type="file" id="contestantPhoto" class="file-input">
+                            <label for="contestantPhoto" class="file-upload-label">
+                                <span id="fileNameDisplay">Choose a file...</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Save Contestant</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div>
+                <h1 class="sidebar-title">Event Manager</h1>
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="/MANAGE-ORGANIZER/organizer.html" type="button" onclick="index.html">Manage Organizers</a></li>
+                        <li><a href="/MAANGE_ACTIVITY/activities.html" type="button" onclick="activities.html">Manage Activities</a></li>
+                        <li><a href="/MANAGE_ROUNDS/rounds.html" type="button" onclick="rounds.html">Manage Rounds</a></li>
+                        <li><a href="/MANAGE_SEGMENTS/segments.html" type="button" onclick="segments.html">Manage Segments</a></li>
+                        <li><a href="/MANAGE_AWARDS/awards.html" type="button" onclick="awards.html">Manage Awards</a></li>
+                        <li><a href="#" class="active">Register Contestant</a></li>
+                        <li><a href="/REGISTER_JUDGE/judge.html" type="button" onclick="judge.html">Register Judge</a></li>
+                        <li><a href="/RESULT_PANEL/result.html" type="button" onclick="result.html">Result Panel</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+               <a href="#">Settings</a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <div class="main-header">
+                    <h2 class="main-title">Manage Contestants</h2>
+                    <button id="addContestantBtn" class="btn btn-primary">Add Contestant</button>
+                </div>
+
+                <!-- Filters -->
+                <div class="card filter-controls">
+                    <div class="control-group">
+                         <label>Self Registration</label>
+                         <input type="checkbox" checked>
+                    </div>
+                    <div class="control-group">
+                        <select style="padding:10px; border:1px solid #ddd; border-radius:6px;"><option>Filter by Status</option></select>
+                        <input type="search" placeholder="Search..." style="padding:10px; border:1px solid #ddd; border-radius:6px;">
+                    </div>
+                </div>
+                
+                <!-- Pending/Rejected Table -->
+                <h3 class="table-title">Pending & Rejected Applicants</h3>
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Address</th>
+                                <th>Contact</th>
+                                <th>Status</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <!-- Added ID to Pending Table Body -->
+                        <tbody id="pendingTableBody">
+                            <tr data-height="165" data-bio="Loves singing" data-photo="maria.jpg">
+                                <td data-label="Name" class="col-name">Maria Clara</td>
+                                <td data-label="Age" class="col-age">22</td>
+                                <td data-label="Address" class="col-address">Cebu City</td>
+                                <td data-label="Contact" class="col-contact">09171234567</td>
+                                <td data-label="Status" class="col-status"><span class="status-badge status-pending">Pending</span></td>
+                                <td data-label="Actions">
+                                    <div class="action-buttons">
+                                        <button class="btn-action btn-action-success accept-btn">Accept</button>
+                                        <button class="btn-action btn-action-danger reject-btn">Reject</button>
+                                        <button class="btn-action edit-btn">Edit</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <br>
+
+                <!-- Accepted Contestants Table -->
+                 <h3 class="table-title">Accepted Contestants</h3>
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Age</th>
+                                <th>Address</th>
+                                <th>Contact</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <!-- Added ID to Accepted Table Body -->
+                        <tbody id="acceptedTableBody">
+                           <tr data-height="170" data-bio="Aspiring Model" data-photo="juana.jpg">
+                                <td data-label="Name" class="col-name">Juana Dela Cruz</td>
+                                <td data-label="Age" class="col-age">21</td>
+                                <td data-label="Address" class="col-address">Lapu-Lapu City</td>
+                                <td data-label="Contact" class="col-contact">09229876543</td>
+                                <td data-label="Actions">
+                                    <div class="action-buttons">
+                                        <button class="btn-action edit-btn">Edit</button>
+                                        <button class="btn-action btn-action-danger deactivate-btn">Deactivate</button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Elements ---
+            const modal = document.getElementById('contestantModal');
+            const addBtn = document.getElementById('addContestantBtn');
+            const closeBtn = document.getElementById('closeModalBtn');
+            const form = document.getElementById('contestantForm');
+            const submitBtn = document.getElementById('submitBtn');
+            const modalTitle = document.getElementById('modalTitle');
+
+            // Tables
+            const pendingTableBody = document.getElementById('pendingTableBody');
+            const acceptedTableBody = document.getElementById('acceptedTableBody');
+
+            // Form Inputs
+            const inputs = {
+                name: document.getElementById('fullName'),
+                age: document.getElementById('age'),
+                height: document.getElementById('height'),
+                address: document.getElementById('address'),
+                contact: document.getElementById('contact'),
+                bio: document.getElementById('biography'),
+                photoInput: document.getElementById('contestantPhoto'),
+                photoLabel: document.getElementById('fileNameDisplay')
+            };
+
+            // Notification Elements
+            const notification = document.getElementById('notification');
+            const notificationMessage = document.getElementById('notificationMessage');
+
+            // Confirmation Modal Elements
+            const confirmModal = document.getElementById('confirmModal');
+            const yesConfirmBtn = document.getElementById('yesConfirmBtn');
+            const cancelConfirmBtn = document.getElementById('cancelConfirmBtn');
+            const confirmMessage = document.getElementById('confirmMessage');
+            
+            // State
+            let editingRow = null;
+            let actionType = null; // 'accept', 'reject', 'deactivate'
+            let targetRow = null; // Row to perform action on
+
+            // --- Functions ---
+
+            const showNotification = (message, type) => {
+                notificationMessage.textContent = message;
+                notification.className = `notification-banner show ${type}`;
+                setTimeout(() => { notification.className = 'notification-banner'; }, 3000);
+            };
+
+            const openModal = (isEdit = false) => {
+                modal.style.display = 'flex';
+                if (!isEdit) {
+                    form.reset();
+                    inputs.photoLabel.textContent = "Choose a file...";
+                    editingRow = null;
+                    modalTitle.textContent = "Add New Contestant";
+                    submitBtn.textContent = "Save Contestant";
+                } else {
+                    modalTitle.textContent = "Edit Contestant Details";
+                    submitBtn.textContent = "Update Contestant";
+                }
+            };
+
+            const closeModal = () => {
+                modal.style.display = 'none';
+                form.reset();
+                editingRow = null;
+            };
+
+            // --- Event Listeners ---
+
+            addBtn.addEventListener('click', () => openModal(false));
+            closeBtn.addEventListener('click', closeModal);
+            window.addEventListener('click', (e) => { 
+                if (e.target === modal) closeModal();
+                if (e.target === confirmModal) confirmModal.style.display = 'none';
+            });
+
+            // File Input Visual Update
+            inputs.photoInput.addEventListener('change', (e) => {
+                const fileName = e.target.files.length > 0 ? e.target.files[0].name : "Choose a file...";
+                inputs.photoLabel.textContent = fileName;
+            });
+
+            // --- Form Submission (Add / Edit) ---
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                // 1. Gather Data
+                const data = {
+                    name: inputs.name.value,
+                    age: inputs.age.value,
+                    height: inputs.height.value,
+                    address: inputs.address.value,
+                    contact: inputs.contact.value,
+                    bio: inputs.bio.value,
+                    photo: inputs.photoLabel.textContent !== "Choose a file..." ? inputs.photoLabel.textContent : (editingRow ? editingRow.getAttribute('data-photo') : "")
+                };
+
+                if (editingRow) {
+                    // === UPDATE EXISTING ROW ===
+                    editingRow.querySelector('.col-name').textContent = data.name;
+                    editingRow.querySelector('.col-age').textContent = data.age;
+                    editingRow.querySelector('.col-address').textContent = data.address;
+                    editingRow.querySelector('.col-contact').textContent = data.contact;
+                    
+                    // Update hidden attributes
+                    editingRow.setAttribute('data-height', data.height);
+                    editingRow.setAttribute('data-bio', data.bio);
+                    editingRow.setAttribute('data-photo', data.photo);
+                    
+                    showNotification('Contestant Updated!', 'success');
+                } else {
+                    // === CREATE NEW ROW (Always goes to Pending Table) ===
+                    const newRow = document.createElement('tr');
+                    newRow.setAttribute('data-height', data.height);
+                    newRow.setAttribute('data-bio', data.bio);
+                    newRow.setAttribute('data-photo', data.photo);
+
+                    newRow.innerHTML = `
+                        <td class="col-name" data-label="Name">${data.name}</td>
+                        <td class="col-age" data-label="Age">${data.age}</td>
+                        <td class="col-address" data-label="Address">${data.address}</td>
+                        <td class="col-contact" data-label="Contact">${data.contact}</td>
+                        <td class="col-status" data-label="Status"><span class="status-badge status-pending">Pending</span></td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <button class="btn-action btn-action-success accept-btn">Accept</button>
+                                <button class="btn-action btn-action-danger reject-btn">Reject</button>
+                                <button class="btn-action edit-btn">Edit</button>
+                            </div>
+                        </td>
+                    `;
+                    pendingTableBody.appendChild(newRow);
+                    showNotification('New Contestant Registered!', 'success');
+                }
+                closeModal();
+            });
+
+            // --- Table Actions (Delegation) ---
+            document.querySelector('.content-wrapper').addEventListener('click', (e) => {
+                const target = e.target;
+                const row = target.closest('tr');
+
+                if (!row) return;
+                const name = row.querySelector('.col-name').textContent;
+
+                // 1. EDIT Button
+                if (target.classList.contains('edit-btn')) {
+                    editingRow = row;
+                    
+                    // Populate Form
+                    inputs.name.value = name;
+                    inputs.age.value = row.querySelector('.col-age').textContent;
+                    inputs.address.value = row.querySelector('.col-address').textContent;
+                    inputs.contact.value = row.querySelector('.col-contact').textContent;
+                    
+                    // Get hidden data
+                    inputs.height.value = row.getAttribute('data-height');
+                    inputs.bio.value = row.getAttribute('data-bio');
+                    const photo = row.getAttribute('data-photo');
+                    inputs.photoLabel.textContent = photo || "Choose a file...";
+
+                    openModal(true);
+                }
+
+                // 2. ACCEPT Button Logic (Trigger Modal)
+                if (target.classList.contains('accept-btn')) {
+                    targetRow = row;
+                    actionType = 'accept';
+                    confirmMessage.textContent = `Accept ${name} into the official roster?`;
+                    yesConfirmBtn.className = "btn btn-action-success"; // Style for Accept
+                    yesConfirmBtn.textContent = "Yes, Accept";
+                    confirmModal.style.display = 'flex';
+                }
+
+                // 3. REJECT Button Logic (Trigger Modal)
+                if (target.classList.contains('reject-btn')) {
+                    targetRow = row;
+                    actionType = 'reject';
+                    confirmMessage.textContent = `Reject application for ${name}?`;
+                    yesConfirmBtn.className = "btn btn-action-danger"; // Style for Reject
+                    yesConfirmBtn.textContent = "Yes, Reject";
+                    confirmModal.style.display = 'flex';
+                }
+
+                // 4. DEACTIVATE Button Logic (Trigger Modal)
+                if (target.classList.contains('deactivate-btn')) {
+                    targetRow = row;
+                    actionType = 'deactivate';
+                    confirmMessage.textContent = `Remove ${name} from the accepted list? This will delete the record.`;
+                    yesConfirmBtn.className = "btn btn-action-danger"; // Style for Delete
+                    yesConfirmBtn.textContent = "Yes, Delete";
+                    confirmModal.style.display = 'flex';
+                }
+            });
+
+            // --- Custom Confirmation Modal Actions ---
+            yesConfirmBtn.addEventListener('click', () => {
+                if (!targetRow) return;
+                const name = targetRow.querySelector('.col-name').textContent;
+
+                if (actionType === 'accept') {
+                    // Clone data
+                    const data = {
+                        name: name,
+                        age: targetRow.querySelector('.col-age').textContent,
+                        address: targetRow.querySelector('.col-address').textContent,
+                        contact: targetRow.querySelector('.col-contact').textContent,
+                        height: targetRow.getAttribute('data-height'),
+                        bio: targetRow.getAttribute('data-bio'),
+                        photo: targetRow.getAttribute('data-photo')
+                    };
+
+                    targetRow.remove(); // Remove from pending
+
+                    // Create new row for Accepted
+                    const newRow = document.createElement('tr');
+                    newRow.setAttribute('data-height', data.height);
+                    newRow.setAttribute('data-bio', data.bio);
+                    newRow.setAttribute('data-photo', data.photo);
+                    
+                    newRow.innerHTML = `
+                        <td class="col-name" data-label="Name">${data.name}</td>
+                        <td class="col-age" data-label="Age">${data.age}</td>
+                        <td class="col-address" data-label="Address">${data.address}</td>
+                        <td class="col-contact" data-label="Contact">${data.contact}</td>
+                        <td data-label="Actions">
+                            <div class="action-buttons">
+                                <button class="btn-action edit-btn">Edit</button>
+                                <button class="btn-action btn-action-danger deactivate-btn">Deactivate</button>
+                            </div>
+                        </td>
+                    `;
+                    acceptedTableBody.appendChild(newRow);
+                    showNotification(`${name} accepted successfully!`, 'success');
+
+                } else if (actionType === 'reject') {
+                    const statusCell = targetRow.querySelector('.col-status');
+                    statusCell.innerHTML = '<span class="status-badge status-rejected">Rejected</span>';
+                    showNotification(`${name} marked as Rejected.`, 'error');
+
+                } else if (actionType === 'deactivate') {
+                    targetRow.remove();
+                    showNotification(`${name} removed from roster.`, 'error');
+                }
+
+                // Reset and Close
+                confirmModal.style.display = 'none';
+                targetRow = null;
+                actionType = null;
+            });
+
+            cancelConfirmBtn.addEventListener('click', () => {
+                confirmModal.style.display = 'none';
+                targetRow = null;
+                actionType = null;
+            });
+
+        });
+    </script>
+</body>
+</html>

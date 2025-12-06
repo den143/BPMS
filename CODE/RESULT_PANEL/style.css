@@ -1,0 +1,123 @@
+/* --- Global Styles & Resets --- */
+:root {
+    --primary-blue: #3B82F6;
+    --primary-blue-dark: #2563EB;
+    --secondary-gray: #6B7280;
+    --bg-color: #F3F4F6;
+    --card-bg-color: #FFFFFF;
+    --text-color: #1F2937;
+    --text-light: #4B5563;
+    --border-color: #E5E7EB;
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --success-color: #10B981;
+    --danger-color: #EF4444;
+    --pending-color: #F59E0B;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body, html { height: 100%; }
+body { font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-color); line-height: 1.6; }
+a { text-decoration: none; color: inherit; }
+ul { list-style: none; }
+
+/* --- Main Layout & Sidebar (Consistent) --- */
+.dashboard-container { display: flex; height: 100vh; }
+.sidebar {
+    width: 288px; background-color: var(--card-bg-color); padding: 24px;
+    box-shadow: 0 10px 15px -3px var(--shadow-color), 0 4px 6px -2px var(--shadow-color);
+    display: flex; flex-direction: column;
+}
+.sidebar-title { font-size: 1.875rem; font-weight: 700; margin-bottom: 3rem; }
+.sidebar-nav { flex-grow: 1; }
+.sidebar-nav ul { display: flex; flex-direction: column; gap: 1rem; }
+.sidebar-nav a {
+    display: block; padding: 12px 16px; border-radius: 0.5rem; font-size: 1.125rem;
+    font-weight: 500; color: var(--text-light); border: 1px solid var(--border-color);
+    box-shadow: 0 1px 2px 0 var(--shadow-color); transition: all 0.3s ease;
+}
+.sidebar-nav a:hover, .sidebar-nav a.active {
+    background-color: var(--primary-blue); color: white; border-color: var(--primary-blue);
+}
+.sidebar-footer a { padding: 12px 16px; font-size: 1.125rem; }
+
+/* --- Main Content --- */
+.main-content { flex: 1; padding: 40px; overflow-y: auto; }
+.content-wrapper { max-width: 1280px; margin: 0 auto; }
+.main-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+.main-header h2 { font-size: 2.25rem; font-weight: 700; }
+.card {
+    background-color: var(--card-bg-color); border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -1px var(--shadow-color);
+}
+.table-title { font-size: 1.5rem; font-weight: 600; margin-top: 2.5rem; margin-bottom: 1rem; }
+
+/* --- Buttons --- */
+.btn { font-weight: 700; padding: 10px 24px; border-radius: 0.5rem; border: none; cursor: pointer; transition: all 0.3s ease; }
+.btn-secondary { background-color: white; color: var(--secondary-gray); border: 1px solid var(--border-color); }
+.btn-secondary:hover { background-color: #F9FAFB; }
+
+/* --- Filter & View Controls --- */
+.filter-controls {
+    padding: 1rem 1.5rem; display: flex; justify-content: space-between;
+    align-items: center; gap: 1rem; margin-bottom: 2rem; flex-wrap: wrap;
+}
+.control-group { display: flex; align-items: center; gap: 0.75rem; }
+.control-group label { font-weight: 500; color: var(--text-light); }
+.filter-controls select {
+    padding: 8px 12px; border: 1px solid var(--border-color); border-radius: 0.5rem;
+}
+
+/* --- View Switcher --- */
+.view-switcher {
+    display: flex; background-color: var(--bg-color); border-radius: 0.5rem; padding: 4px;
+}
+.view-switcher input[type="radio"] { display: none; }
+.view-switcher label {
+    padding: 6px 16px; border-radius: 0.375rem; cursor: pointer;
+    font-weight: 500; color: var(--text-light); transition: all 0.3s ease;
+}
+.view-switcher input[type="radio"]:checked + label {
+    background-color: white; color: var(--primary-blue);
+    box-shadow: 0 1px 3px 0 var(--shadow-color), 0 1px 2px 0 rgba(0,0,0,0.06);
+}
+
+/* --- Table Styles --- */
+.table-card { padding: 0; overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table thead { background-color: #F9FAFB; }
+.data-table th { padding: 16px 24px; text-align: left; text-transform: uppercase; font-size: 0.75rem; font-weight: 600; color: var(--text-light); border-bottom: 2px solid var(--border-color); }
+.data-table td { padding: 16px 24px; color: var(--text-light); border-bottom: 1px solid var(--border-color); vertical-align: middle; }
+.data-table tbody tr:last-child td { border-bottom: none; }
+.data-table td:first-child { font-weight: 500; color: var(--text-color); }
+.data-table td[rowspan] { font-weight: 600; background-color: #F9FAFB; border-right: 2px solid var(--border-color); }
+
+.text-center { text-align: center; }
+.action-buttons { display: flex; justify-content: center; gap: 0.5rem; }
+.btn-action { background: none; border: 1px solid transparent; padding: 6px 12px; border-radius: 0.375rem; cursor: pointer; font-weight: 500; transition: all 0.2s; }
+.btn-action.edit-btn { color: var(--primary-blue); border-color: #BFDBFE; }
+.btn-action.edit-btn:hover { background-color: #EFF6FF; }
+
+/* --- Status Badges --- */
+.status-badge { padding: 4px 10px; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+.status-qualified { background-color: #D1FAE5; color: #065F46; }
+.status-eliminated { background-color: #FEE2E2; color: #991B1B; }
+.status-pending { background-color: #FEF3C7; color: #92400E; }
+.status-finalized { background-color: #E0E7FF; color: #3730A3; }
+
+/* --- Responsive Design --- */
+@media (max-width: 768px) {
+    .dashboard-container { flex-direction: column; }
+    .sidebar { width: 100%; height: auto; flex-direction: row; align-items: center; padding: 1rem; }
+    .sidebar-title { margin-bottom: 0; font-size: 1.5rem; }
+    .sidebar-nav, .sidebar-footer { display: none; }
+    .main-content { padding: 20px; }
+    .main-header { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    .filter-controls { flex-direction: column; align-items: stretch; gap: 1rem; }
+    .view-switcher { width: 100%; justify-content: space-around; }
+    
+    .data-table thead { display: none; }
+    .data-table tr { display: block; margin-bottom: 1rem; border: 1px solid var(--border-color); border-radius: 0.5rem; }
+    .data-table td { display: block; text-align: right; padding-left: 50%; position: relative; white-space: normal; }
+    .data-table td::before { content: attr(data-label); position: absolute; left: 1rem; width: 45%; text-align: left; font-weight: bold; }
+    .data-table td[rowspan] { border-right: none; border-bottom: 1px solid var(--border-color); }
+}
