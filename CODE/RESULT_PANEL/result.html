@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -595,4 +596,603 @@
         });
     </script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Consolidated Styling -->
+    <style>
+        /* Base Styles */
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f4f4f9; 
+            margin: 0;
+        }
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: 250px;
+            padding: 20px;
+            background: white;
+            border-right: 1px solid #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sidebar-title {
+            font-size: 1.5rem;
+            color: #2196f3;
+            margin-bottom: 30px;
+            font-weight: 700;
+        }
+        .sidebar-nav ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .sidebar-nav li a {
+            display: block;
+            padding: 10px 15px;
+            margin-bottom: 5px;
+            text-decoration: none;
+            color: #333;
+            border-radius: 6px;
+            transition: background-color 0.2s;
+        }
+        .sidebar-nav li a:hover, .sidebar-nav li a.active {
+            background-color: #e3f2fd;
+            color: #2196f3;
+            font-weight: 600;
+        }
+        .sidebar-footer a {
+            display: block;
+            padding: 10px 15px;
+            text-decoration: none;
+            color: #666;
+            border-top: 1px solid #eee;
+            margin-top: 20px;
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            padding: 20px 40px;
+        }
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .main-title {
+            font-size: 2rem;
+            color: #333;
+            font-weight: 600;
+        }
+
+        /* Table Styling */
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            margin-bottom: 20px;
+        }
+        .data-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+        }
+        .data-table th, .data-table td { 
+            padding: 15px 20px; 
+            border-bottom: 1px solid #f0f0f0; 
+            text-align: left;
+            font-size: 0.95rem;
+            vertical-align: middle;
+        }
+        .data-table th {
+            background-color: #f7f9fc;
+            font-weight: 600;
+            color: #555;
+        }
+        .data-table tr:last-child td {
+            border-bottom: none;
+        }
+        .table-title {
+            font-size: 1.2rem;
+            color: #555;
+            margin-bottom: 10px;
+            font-weight: 600;
+            margin-top: 0;
+        }
+
+        /* Status Badges */
+        .status-badge { padding: 4px 10px; border-radius: 16px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .status-qualified { background: #e8f5e9; color: #2e7d32; }
+        .status-eliminated { background: #ffebee; color: #c62828; }
+        .status-finalized { background: #e3f2fd; color: #1565c0; }
+        .status-pending { background: #fff3e0; color: #e65100; }
+
+        /* Buttons */
+        .btn { padding: 10px 20px; cursor: pointer; border: none; border-radius: 6px; transition: all 0.2s; font-weight: 600; }
+        .btn-primary { background: #2196f3; color: white; }
+        .btn-primary:hover { background: #1e88e5; }
+        .btn-secondary { background: #fff; border: 1px solid #ccc; color: #333; }
+        .btn-secondary:hover { background: #f5f5f5; }
+        .btn-action { padding: 6px 12px; margin-right: 5px; cursor: pointer; background: #eee; border: 1px solid #ddd; border-radius: 4px; font-size: 0.85rem; }
+        .btn-action:hover { background: #e0e0e0; }
+
+        /* Modal Overlays */
+        .modal-overlay { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.6); 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 1000; 
+            padding: 20px;
+        }
+        .modal-content { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            width: 450px; 
+            max-width: 95%; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .modal-header h2 { margin: 0; font-size: 1.75rem; color: #333; }
+        .close-button { border:none; background:none; font-size:2rem; cursor:pointer; color: #999; transition: color 0.2s; }
+        .close-button:hover { color: #333; }
+
+        /* Form Styles */
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; font-weight: 500; color: #555; }
+        .form-group input { 
+            width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px; box-sizing: border-box; transition: border-color 0.2s;
+        }
+        .form-group input:focus { border-color: #2196f3; outline: none; }
+        .form-group input[readonly] { background-color: #f5f5f5; color: #777; border-color: #eee; }
+        .form-actions { margin-top: 30px; text-align: right; }
+
+        /* Filter Controls & View Switcher */
+        .filter-controls {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .control-group { display: flex; align-items: center; gap: 10px; }
+        .control-group select { padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; }
+
+        .view-switcher { display: flex; gap: 5px; background: #f0f0f0; padding: 4px; border-radius: 8px; }
+        .view-switcher input[type=radio] { display: none; }
+        .view-switcher label { 
+            padding: 8px 16px; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 0.9em; 
+            font-weight: 500;
+            color: #666;
+            transition: all 0.2s;
+        }
+        .view-switcher input[type=radio]:checked + label { 
+            background: white; 
+            color: #2196f3; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-weight: 600;
+        }
+
+        /* Notification Banner */
+        .notification-banner { 
+            position: fixed; top: -100px; left: 50%; transform: translateX(-50%); 
+            background: #333; color: white; padding: 15px 30px; border-radius: 50px; 
+            transition: top 0.5s ease; z-index: 2000; box-shadow: 0 4px 10px rgba(0,0,0,0.2); font-weight: 500;
+        }
+        .notification-banner.show { top: 20px; }
+        .notification-banner.success { background: #43a047; }
+        .notification-banner.info { background: #2196f3; }
+        .notification-banner p { margin: 0; }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .dashboard-container { flex-direction: column; }
+            .sidebar { width: 100%; height: auto; border-right: none; border-bottom: 1px solid #e0e0e0; }
+            .main-content { padding: 20px; }
+            .data-table thead { display: none; }
+            .data-table tr { display: block; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 8px; }
+            .data-table td { display: block; text-align: right; padding: 10px 15px; position: relative; border-bottom: 1px solid #eee; }
+            .data-table td::before { content: attr(data-label); position: absolute; left: 15px; font-weight: 600; color: #555; }
+            .filter-controls { flex-direction: column; align-items: stretch; }
+            .view-switcher { flex-direction: column; }
+            .view-switcher label { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Notification Banner -->
+    <div id="notification" class="notification-banner">
+        <p id="notificationMessage"></p>
+    </div>
+
+    <!-- Edit Scores Modal -->
+    <div id="scoreModal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Adjust Scores</h2>
+                <button id="closeModalBtn" class="close-button" style="border:none; background:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="scoreForm">
+                    <div class="form-group">
+                        <label>Contestant Name</label>
+                        <input type="text" id="contestantName" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="scoreTalent">Talent Score</label>
+                        <input type="number" id="scoreTalent" step="0.1" min="0" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="scoreSwimsuit">Swimsuit Score</label>
+                        <input type="number" id="scoreSwimsuit" step="0.1" min="0" max="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="scoreGown">Evening Gown Score</label>
+                        <input type="number" id="scoreGown" step="0.1" min="0" max="100" required>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Update & Recalculate</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div>
+                <h1 class="sidebar-title">Event Manager</h1>
+                <nav class="sidebar-nav">
+                    <ul>
+                        <li><a href="../MANAGE-ORGANIZER/organizer.html" type="button" onclick="index.html">Manage Organizers</a></li>
+                        <li><a href="../MAANGE_ACTIVITY/activities.html" type="button" onclick="activities.html">Manage Activities</a></li>
+                        <li><a href="../MANAGE_ROUNDS/rounds.html" type="button" onclick="rounds.html">Manage Rounds</a></li>
+                        <li><a href="../MANAGE_SEGMENTS/segments.html" type="button" onclick="segments.html">Manage Segments</a></li>
+                        <li><a href="../MANAGE_AWARDS/awards.html" type="button" onclick="awards.html">Manage Awards</a></li>
+                        <li><a href="../REGISTER_CONTESTANT/contestant.html" type="button" onclick="contestant.html">Register Contestant</a></li>
+                        <li><a href="../REGISTER_JUDGE/judge.html" type="button" onclick="judge.html">Register Judge</a></li>
+                        <li><a href="#" class="active">Result Panel</a></li>
+                    </ul>
+                </nav>
+            </div>
+            <div class="sidebar-footer">
+               <a href="#">Settings</a>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <div class="content-wrapper">
+                <div class="main-header">
+                    <h2 class="main-title">Result Panel</h2>
+                    <button class="btn btn-secondary" id="exportBtn">Export Report</button>
+                </div>
+
+                <!-- Filters and View Controls -->
+                <div class="card filter-controls">
+                    <div class="control-group">
+                        <label for="roundSelect" style="font-weight:500; color:#555;">Select Round:</label>
+                        <select id="roundSelect">
+                            <option>Preliminary</option>
+                            <option>Semifinals</option>
+                            <option>Finals</option>
+                        </select>
+                    </div>
+                    <div class="control-group">
+                        <label style="font-weight:500; color:#555;">View:</label>
+                        <div class="view-switcher">
+                            <input type="radio" id="viewLeaderboard" name="viewType" value="leaderboardView" checked>
+                            <label for="viewLeaderboard">Leaderboard</label>
+                            
+                            <input type="radio" id="viewJudge" name="viewType" value="judgeBreakdownView">
+                            <label for="viewJudge">Judge Breakdown</label>
+
+                            <input type="radio" id="viewSegment" name="viewType" value="segmentBreakdownView">
+                            <label for="viewSegment">Segment Breakdown</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Leaderboard View (Default) -->
+                <div id="leaderboardView" class="view-content">
+                    <h3 class="table-title">Leaderboard</h3>
+                    <div class="card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Rank</th>
+                                    <th>Contestant</th>
+                                    <th>Talent</th>
+                                    <th>Swimsuit</th>
+                                    <th>Evening Gown</th>
+                                    <th>Total (Avg)</th>
+                                    <th>Status</th>
+                                    <th class="text-center">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaderboardBody">
+                                <tr>
+                                    <td class="col-rank" data-label="Rank">1</td>
+                                    <td class="col-name" data-label="Contestant">Juana Dela Cruz</td>
+                                    <td class="col-talent" data-label="Talent">95.5</td>
+                                    <td class="col-swim" data-label="Swimsuit">96.0</td>
+                                    <td class="col-gown" data-label="Evening Gown">97.2</td>
+                                    <td class="col-total" data-label="Total (Avg)">96.23</td>
+                                    <td class="col-status" data-label="Status"><span class="status-badge status-qualified">Qualified</span></td>
+                                    <td data-label="Actions" class="text-center"><button class="btn-action edit-score-btn">Edit</button></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-rank" data-label="Rank">2</td>
+                                    <td class="col-name" data-label="Contestant">Maria Clara</td>
+                                    <td class="col-talent" data-label="Talent">94.0</td>
+                                    <td class="col-swim" data-label="Swimsuit">95.8</td>
+                                    <td class="col-gown" data-label="Evening Gown">95.5</td>
+                                    <td class="col-total" data-label="Total (Avg)">95.10</td>
+                                    <td class="col-status" data-label="Status"><span class="status-badge status-qualified">Qualified</span></td>
+                                    <td data-label="Actions" class="text-center"><button class="btn-action edit-score-btn">Edit</button></td>
+                                </tr>
+                                <tr>
+                                    <td class="col-rank" data-label="Rank">3</td>
+                                    <td class="col-name" data-label="Contestant">Gabriela Silang</td>
+                                    <td class="col-talent" data-label="Talent">90.1</td>
+                                    <td class="col-swim" data-label="Swimsuit">92.3</td>
+                                    <td class="col-gown" data-label="Evening Gown">91.5</td>
+                                    <td class="col-total" data-label="Total (Avg)">91.30</td>
+                                    <td class="col-status" data-label="Status"><span class="status-badge status-eliminated">Eliminated</span></td>
+                                    <td data-label="Actions" class="text-center"><button class="btn-action edit-score-btn">Edit</button></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Judge Breakdown View -->
+                <div id="judgeBreakdownView" class="view-content" style="display: none;">
+                    <h3 class="table-title">Judge Breakdown</h3>
+                      <div class="card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Contestant</th>
+                                    <th>Judge 1</th>
+                                    <th>Judge 2</th>
+                                    <th>Judge 3</th>
+                                    <th>Average</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td data-label="Contestant">Juana Dela Cruz</td>
+                                    <td data-label="Judge 1">96.0</td>
+                                    <td data-label="Judge 2">97.5</td>
+                                    <td data-label="Judge 3">95.2</td>
+                                    <td data-label="Average">96.23</td>
+                                </tr>
+                                 <tr>
+                                    <td data-label="Contestant">Maria Clara</td>
+                                    <td data-label="Judge 1">95.0</td>
+                                    <td data-label="Judge 2">94.8</td>
+                                    <td data-label="Judge 3">95.5</td>
+                                    <td data-label="Average">95.10</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Segment Breakdown View -->
+                <div id="segmentBreakdownView" class="view-content" style="display: none;">
+                    <h3 class="table-title">Segment Breakdown</h3>
+                      <div class="card">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Contestant</th>
+                                    <th>Segment</th>
+                                    <th>Judge 1</th>
+                                    <th>Judge 2</th>
+                                    <th>Judge 3</th>
+                                    <th>Average</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td rowspan="3" data-label="Contestant" style="border-right: 1px solid #eee;">Juana Dela Cruz</td>
+                                    <td data-label="Segment">Talent</td>
+                                    <td data-label="Judge 1">95.0</td>
+                                    <td data-label="Judge 2">96.0</td>
+                                    <td data-label="Judge 3">95.5</td>
+                                    <td data-label="Average">95.5</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Segment">Swimsuit</td>
+                                    <td data-label="Judge 1">96.0</td>
+                                    <td data-label="Judge 2">97.0</td>
+                                    <td data-label="Judge 3">95.0</td>
+                                    <td data-label="Average">96.0</td>
+                                </tr>
+                                <tr>
+                                    <td data-label="Segment">Evening Gown</td>
+                                    <td data-label="Judge 1">97.0</td>
+                                    <td data-label="Judge 2">98.0</td>
+                                    <td data-label="Judge 3">96.6</td>
+                                    <td data-label="Average">97.2</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Existing Awards Table -->
+                 <h3 class="table-title" style="margin-top: 30px;">Awards Status</h3>
+                <div class="card">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Award Name</th>
+                                <th>Type</th>
+                                <th>Winner</th>
+                                <th>Status</th>
+                                <th class="text-center">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                           <tr>
+                                <td data-label="Award Name">Best in Costume</td>
+                                <td data-label="Type">Round-Based</td>
+                                <td data-label="Winner">-</td>
+                                <td data-label="Status"><span class="status-badge status-eliminated">Pending</span></td>
+                                <td data-label="Actions" class="text-center"><button class="btn-action">Assign Winner</button></td>
+                            </tr>
+                            <tr>
+                                <td data-label="Award Name">Miss Congeniality</td>
+                                <td data-label="Type">Event-Wide</td>
+                                <td data-label="Winner">Contestant #7</td>
+                                <td data-label="Status"><span class="status-badge status-finalized">Finalized</span></td>
+                                <td data-label="Actions" class="text-center"><button class="btn-action">Edit</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Notification ---
+            const notification = document.getElementById('notification');
+            const notificationMessage = document.getElementById('notificationMessage');
+
+            const showNotification = (message, type) => {
+                notificationMessage.textContent = message;
+                notification.className = `notification-banner show ${type}`;
+                setTimeout(() => { notification.className = 'notification-banner'; }, 3000);
+            };
+
+            // --- Export Button Logic ---
+            const exportBtn = document.getElementById('exportBtn');
+            exportBtn.addEventListener('click', () => {
+                showNotification('Exporting PDF Report...', 'info');
+            });
+
+            // --- View Switcher Logic ---
+            const viewRadios = document.querySelectorAll('input[name="viewType"]');
+            const contentDivs = document.querySelectorAll('.view-content');
+
+            const handleViewChange = (event) => {
+                const selectedViewId = event.target.value;
+                contentDivs.forEach(div => {
+                    div.style.display = 'none';
+                });
+                const viewToShow = document.getElementById(selectedViewId);
+                if (viewToShow) viewToShow.style.display = 'block';
+            };
+
+            viewRadios.forEach(radio => radio.addEventListener('change', handleViewChange));
+
+            // --- Edit Score Modal Logic ---
+            const modal = document.getElementById('scoreModal');
+            const closeModalBtn = document.getElementById('closeModalBtn');
+            const scoreForm = document.getElementById('scoreForm');
+            
+            // Inputs
+            const nameInput = document.getElementById('contestantName');
+            const talentInput = document.getElementById('scoreTalent');
+            const swimInput = document.getElementById('scoreSwimsuit');
+            const gownInput = document.getElementById('scoreGown');
+
+            let editingRow = null;
+
+            const closeModal = () => {
+                modal.style.display = 'none';
+                scoreForm.reset();
+                editingRow = null;
+            };
+
+            closeModalBtn.addEventListener('click', closeModal);
+            window.addEventListener('click', (e) => { if (e.target === modal) closeModal() });
+
+            // 1. Handle "Edit" Clicks in Leaderboard
+            document.getElementById('leaderboardBody').addEventListener('click', (e) => {
+                if (e.target.classList.contains('edit-score-btn')) {
+                    const row = e.target.closest('tr');
+                    editingRow = row;
+
+                    // Get current values
+                    const name = row.querySelector('.col-name').textContent;
+                    const talent = parseFloat(row.querySelector('.col-talent').textContent);
+                    const swim = parseFloat(row.querySelector('.col-swim').textContent);
+                    const gown = parseFloat(row.querySelector('.col-gown').textContent);
+
+                    // Populate Modal
+                    nameInput.value = name;
+                    talentInput.value = talent;
+                    swimInput.value = swim;
+                    gownInput.value = gown;
+
+                    modal.style.display = 'flex';
+                }
+            });
+
+            // 2. Handle Score Form Submit (Recalculate Logic)
+            scoreForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                if (editingRow) {
+                    const newTalent = parseFloat(talentInput.value);
+                    const newSwim = parseFloat(swimInput.value);
+                    const newGown = parseFloat(gownInput.value);
+
+                    // Calculate Average
+                    const average = ((newTalent + newSwim + newGown) / 3).toFixed(2);
+
+                    // Determine Status (Simple logic: > 92 is Qualified)
+                    const isQualified = average >= 92.0;
+                    const statusHtml = isQualified 
+                        ? '<span class="status-badge status-qualified">Qualified</span>' 
+                        : '<span class="status-badge status-eliminated">Eliminated</span>';
+
+                    // Update Table
+                    editingRow.querySelector('.col-talent').textContent = newTalent;
+                    editingRow.querySelector('.col-swim').textContent = newSwim;
+                    editingRow.querySelector('.col-gown').textContent = newGown;
+                    editingRow.querySelector('.col-total').textContent = average;
+                    editingRow.querySelector('.col-status').innerHTML = statusHtml;
+
+                    showNotification(`Scores updated for ${nameInput.value}. New Average: ${average}`, 'success');
+                    closeModal();
+                }
+            });
+        });
+    </script>
+</body>
+>>>>>>> 76b4a9b (Initial commit)
 </html>
